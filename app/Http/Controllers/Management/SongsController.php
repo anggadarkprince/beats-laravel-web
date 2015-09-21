@@ -67,7 +67,8 @@ class SongsController extends Controller
         return redirect('music');
     }
 
-    public function destroy($slug){
+    public function destroy($slug)
+    {
         $song = $this->song->whereSlug($slug)->first();
 
         $song->delete();

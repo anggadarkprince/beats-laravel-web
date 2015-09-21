@@ -15,6 +15,7 @@ class CreateSongsTable extends Migration
         Schema::create('artists', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name', 50);
+            $table->string('avatar')->default('noimage.jpg');
             $table->string('about', 250);
             $table->date('birthday');
             $table->string('birthplace', 100);
@@ -26,6 +27,7 @@ class CreateSongsTable extends Migration
             $table->increments('id');
             $table->integer('artist')->unsigned();
             $table->string('title', 50);
+            $table->string('cover', 50);
             $table->string('description', 250);
             $table->string('label', 50);
             $table->date('released');
@@ -43,6 +45,7 @@ class CreateSongsTable extends Migration
             $table->string('writer', 100)->nullable();
             $table->string('music', 100)->nullable();
             $table->time('duration');
+            $table->boolean('is_hits');
             $table->string('slug')->unique();
             $table->timestamps();
 

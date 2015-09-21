@@ -12,14 +12,13 @@
 */
 
 $factory->define(App\User::class, function (Faker\Generator $faker) {
-    $avatar = array('noimage.jpg','a.jpg','b.jpg','c.jpg');
     $level = array('ADMINISTRATOR','USER', 'USER', 'USER', 'USER', 'USER');
     return [
         'name' => $faker->name,
         'email' => $faker->email,
         'password' => bcrypt(str_random(10)),
         'remember_token' => str_random(10),
-        'avatar' => $avatar[array_rand($avatar,1)],
+        'avatar' => 'avatar ('.rand(1,7).').jpg',
         'level' => $level[array_rand($level, 1)]
     ];
 });
@@ -27,6 +26,7 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 $factory->define(App\Artist::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->name,
+        'avatar' => 'avatar ('.rand(1,7).').jpg',
         'about' => $faker->paragraph,
         'birthday' => $faker->dateTime,
         'birthplace' => $faker->city.', '.$faker->country,
@@ -38,6 +38,7 @@ $factory->define(App\Album::class, function (Faker\Generator $faker) {
     return [
         'artist' => rand(1,30),
         'title' => ucwords(implode(' ', $faker->words)),
+        'cover' => 'cover ('.rand(1,55).').jpg',
         'description' => $faker->paragraph,
         'label' => ucfirst($faker->word),
         'released' => $faker->dateTime,
@@ -53,6 +54,7 @@ $factory->define(App\Song::class, function (Faker\Generator $faker) {
         'writer' => $faker->name,
         'music' => $faker->name,
         'duration' => $faker->time(),
+        'is_hits' => rand(0, 1),
         'slug' => str_random(10)
     ];
 });
