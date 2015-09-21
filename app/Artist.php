@@ -15,4 +15,15 @@ class Artist extends Model
 {
     protected $table = 'artists';
     protected $primaryKey = 'id';
+
+    public function getArtistWithAlbum()
+    {
+        $artists = Artist::selectRaw('artists.id, artists.name, avatar, artists.slug, title, cover, count(*) as album_total')
+            ->leftJoin('albums', 'artists.id', '=', 'albums.artist')
+            ->groupBy('artists.id')
+            ->orderBy('artists.name', 'asc')
+            ->paginate(15);
+
+        return $artists;
+    }
 }

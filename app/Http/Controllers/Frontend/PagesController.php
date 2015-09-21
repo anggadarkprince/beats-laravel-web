@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Artist;
 use App\Song;
 use Illuminate\Http\Request;
 
@@ -37,7 +38,13 @@ class PagesController extends Controller
 
     public function artists()
     {
-        return view('pages.artists');
+        $page = "Artists and Singers";
+
+        $artist = new Artist();
+
+        $artists = $artist->getArtistWithAlbum();
+
+        return view('pages.artists', compact('artists', 'page'));
     }
 
     public function artist($name)
