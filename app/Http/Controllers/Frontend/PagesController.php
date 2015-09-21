@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Song;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -16,14 +17,22 @@ class PagesController extends Controller
      */
     public function index()
     {
-        $featured = ['New Artist', 'Soundtracks', 'Masterpiece', 'Top Chart', 'Meet & Greet', 'Concert'];
         $page = "Home page";
+
+        $featured = ['New Artist', 'Soundtracks', 'Masterpiece', 'Top Chart', 'Meet & Greet', 'Concert'];
+
         return view('pages.home', compact('featured', 'page'));
     }
 
     public function hits()
     {
-        return view('pages.hits');
+        $page = "Song Hits";
+
+        $song = new Song();
+
+        $hits = $song->getHitsSong();
+
+        return view('pages.hits', compact('hits', 'page'));
     }
 
     public function artists()

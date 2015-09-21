@@ -14,8 +14,18 @@ use Illuminate\Database\Eloquent\Model;
 class Song extends Model
 {
     protected $table = 'songs';
-    protected $fillable = [
-        'title', 'lyrics', 'slug'
-    ];
+    protected $primaryKey = 'id';
+
+    public function getHitsSong()
+    {
+        $hits = Song::select('songs.title as title', 'albums.title as album', 'name', 'duration', 'cover')
+                ->where('is_hits', 1)
+                ->orderBy('songs.title', 'asc')
+                ->join('albums', 'albums.id', '=', 'songs.album')
+                ->join('artists', 'artists.id', '=', 'albums.artist')
+                ->take(10)
+                ->get();
+        return $hits;
+    }
 
 }
