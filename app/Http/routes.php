@@ -50,7 +50,7 @@ get('/video', ['as' => 'public_video', 'uses' => 'Frontend\PagesController@video
 get('/about', ['as' => 'public_about', 'uses' => 'Frontend\PagesController@about']);
 get('/login', ['as' => 'public_sign_in', 'uses' => 'Frontend\PagesController@login']);
 get('/register', ['as' => 'public_sign_up', 'uses' => 'Frontend\PagesController@register']);
-get('/post', ['as' => 'public_post', 'uses' => 'Frontend\PostController@show']);
+get('/post/{slug}', ['as' => 'public_post', 'uses' => 'Frontend\PostController@show']);
 
 post('/auth',['as' => 'post_auth', 'uses' => 'Auth.AuthController@auth']);
 post('/register_user', ['as' => 'post_register', 'uses' => 'Auth.AuthController@register']);

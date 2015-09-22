@@ -15,4 +15,9 @@ class Video extends Model
 {
     protected $table = 'videos';
     protected $primaryKey = 'id';
+
+    public function artist()
+    {
+        return $this->belongsTo('App\Artist', 'artist');
+    }
 }

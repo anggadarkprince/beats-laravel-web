@@ -229,6 +229,9 @@ p.subtitle{
     padding-bottom: 15px;
     border-bottom: 1px solid rgba(0,0,0,.1);
 }
+.post:last-child{
+    border-bottom: none;
+}
 .post h1{
     font-size: 22px;
 }

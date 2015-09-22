@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\App;
 
 class PagesController extends Controller
 {
@@ -47,9 +48,21 @@ class PagesController extends Controller
         return view('pages.artists', compact('artists', 'page'));
     }
 
-    public function artist($name)
+    public function artist($artistSlug)
     {
-        return view('pages.artist');
+        $page = "Artist";
+
+        $artist = new Artist();
+
+        $artistData = $artist->whereSlug($artistSlug)->firstOrFail();
+
+        $albums = $artistData->albums()->get();
+
+        $videos = $artistData->videos()->get();
+
+        $posts = $artistData->posts()->get();
+
+        return view('pages.artist', compact('artistData', 'albums', 'videos', 'posts', 'page'));
     }
 
     public function album($name, $album)

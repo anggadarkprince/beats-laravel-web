@@ -17,6 +17,7 @@ class CreateVideosTable extends Migration
             $table->integer('artist')->unsigned();
             $table->string('title', 50);
             $table->string('description', 250);
+            $table->string('resource');
             $table->string('slug')->unique();
             $table->timestamps();
 

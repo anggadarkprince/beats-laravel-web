@@ -15,4 +15,14 @@ class Post extends Model
 {
     protected $table = 'posts';
     protected $primaryKey = 'id';
+
+    public function comments()
+    {
+        return $this->hasMany('App\Post', 'post');
+    }
+
+    public function author()
+    {
+        return $this->belongsTo('App\user', 'author');
+    }
 }

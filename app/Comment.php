@@ -15,4 +15,9 @@ class Comment extends Model
 {
     protected $table = 'comments';
     protected $primaryKey = 'id';
+
+    public function post()
+    {
+        return $this->belongsTo('App\Post', 'post');
+    }
 }

@@ -97,6 +97,7 @@ $factory->define(App\Video::class, function (Faker\Generator $faker) {
         'artist' => rand(1,30),
         'title' => ucwords(implode(' ', $faker->words)),
         'description' => $faker->paragraph,
+        'resource' => 'video ('.rand(1,3).').flv',
         'slug' => str_random(10)
     ];
 });

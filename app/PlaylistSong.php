@@ -15,4 +15,14 @@ class PlaylistSong extends Model
 {
     protected $table = 'playlist_songs';
     protected $primaryKey = 'id';
+
+    public function song()
+    {
+        return $this->belongsTo('App\Song', 'song');
+    }
+
+    public function playlist()
+    {
+        return $this->belongsTo('App\Playlist', 'playlist');
+    }
 }

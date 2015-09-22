@@ -15,4 +15,9 @@ class Playlist extends Model
 {
     protected $table = 'playlist';
     protected $primaryKey = 'id';
+
+    public function user()
+    {
+        return $this->belongsTo('App\User', 'creator');
+    }
 }

@@ -26,4 +26,27 @@ class Artist extends Model
 
         return $artists;
     }
+
+    public function albums()
+    {
+        return $this->hasMany('App\Album', 'artist')
+            ->selectRaw('*, count(*) as song_total')
+            ->leftJoin('songs', 'albums.id', '=', 'songs.album')
+            ->orderBy('released', 'asc')
+            ->groupBy('albums.id');
+    }
+
+    public function videos()
+    {
+        return $this->hasMany('App\Video', 'artist');
+    }
+
+    public function posts()
+    {
+        return $this->hasMany('App\Post', 'artist')
+            ->selectRaw('*, name as author')
+            ->join('users', 'users.id', '=', 'posts.author')
+            ->orderBy('posts.created_at', 'desc');
+    }
+
 }

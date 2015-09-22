@@ -15,4 +15,9 @@ class Album extends Model
 {
     protected $table = 'albums';
     protected $primaryKey = 'id';
+
+    public function artist()
+    {
+        return $this->belongsTo('App\Artist', 'artist');
+    }
 }

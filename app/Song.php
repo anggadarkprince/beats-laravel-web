@@ -29,4 +29,9 @@ class Song extends Model
         return $hits;
     }
 
+    public function album()
+    {
+        return $this->belongsTo('App\Album', 'album');
+    }
+
 }
