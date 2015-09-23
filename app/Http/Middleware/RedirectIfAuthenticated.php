@@ -35,7 +35,8 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next)
     {
         if ($this->auth->check()) {
-            return redirect('/home');
+            $user = $request->user();
+            return redirect('/'.str_slug($user->name));
         }
 
         return $next($request);

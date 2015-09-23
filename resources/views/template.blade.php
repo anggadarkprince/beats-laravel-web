@@ -34,13 +34,23 @@
 
     <div class="container">
         <header class="header">
-            <ul class="nav nav-pills pull-right">
+            <ul class="nav nav-pills navbar-right">
                 <?php $segment = Request::segment(1) ?>
                 <li class="{{ $segment == '' ? 'active' : '' }}">{!! link_to_route('public_home', 'Home') !!}</li>
                 <li class="{{ $segment == 'hits' ? 'active' : '' }}">{!! link_to_route('public_hits', 'Hits') !!}</li>
                 <li class="{{ $segment == 'artist' || $segment == 'album' || $segment == 'song' ? 'active' : '' }}">{!! link_to_route('public_artists', 'Artist') !!}</li>
                 <li class="{{ $segment == 'video' ? 'active' : '' }}">{!! link_to_route('public_video', 'Video') !!}</li>
-                <li class="{{ $segment == 'about' ? 'active' : '' }}">{!! link_to_route('public_about', 'About') !!}</li>
+                <li class="hidden-xs {{ $segment == 'about' ? 'active' : '' }}">{!! link_to_route('public_about', 'About') !!}</li>
+                <li id="fat-menu" class="dropdown">
+                    <a href="#" id="dropmenu" role="button" class="dropdown-toggle" data-toggle="dropdown"><img src="/img/avatar/avatar (3).jpg" class="top-avatar"></a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropmenu">
+                        <li role="presentation"><a role="menuitem" href="{{ route('private_profile') }}"><i class="glyphicon glyphicon-user"></i> Profile</a></li>
+                        <li role="presentation"><a role="menuitem" href="{{ route('private_playlist') }}"><i class="glyphicon glyphicon-play"></i> Playlist</a></li>
+                        <li role="presentation"><a role="menuitem" href="{{ route('private_favorite') }}"><i class="glyphicon glyphicon-heart"></i> Favorite</a></li>
+                        <li role="presentation" class="divider"></li>
+                        <li role="presentation"><a role="menuitem" href="{{ route('public_sign_out') }}"><i class="glyphicon glyphicon-log-out"></i> Sign Out</a></li>
+                    </ul>
+                </li>
             </ul>
             <h3 class="text-muted"><span class="glyphicon glyphicon-headphones"></span> <span class="hidden-xs">THE BEATS</span></h3>
         </header>

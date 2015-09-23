@@ -7,8 +7,17 @@
     {!! Form::open(['route' => 'post_sign_in', 'class' => 'form-signin']) !!}
         <h2 class="form-signin-heading center-block text-center">SIGN IN</h2>
 
-        <input type="text" class="form-control" placeholder="Email address" required autofocus>
-        <input type="password" class="form-control" placeholder="Password" required>
+        @if(Session::has('status'))
+            <div class="form-group">
+                {!! '<p class="text-danger">*'.Session::get('status').'</p>' !!}
+            </div>
+        @endif
+
+        {!! Form::email('email', null, ['class' => 'form-control', 'placeholder' => 'Email address', 'required' => true]) !!}
+        {!! $errors->first('email', '<span class="help-block">:message</span>') !!}
+
+        {!! Form::password('password', ['class' => 'form-control', 'placeholder' => 'Input your password', 'required' => true]) !!}
+        {!! $errors->first('password', '<span class="help-block">:message</span>') !!}
 
         <div class="form-group">
             {!! Form::submit('Sign In', ['class' => 'btn btn-lg btn-info btn-block']) !!}

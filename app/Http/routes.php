@@ -43,7 +43,7 @@ $router->resource('people', 'PeopleController',[
 // Authentication routes...
 Route::get('auth/login', ['as' => 'public_sign_in', 'uses' => 'Auth\AuthController@getLogin']);
 Route::post('auth/login', ['as' => 'post_sign_in', 'uses' => 'Auth\AuthController@postLogin']);
-Route::get('auth/logout', ['as' => 'public_sign_out', 'uses' => 'Auth\AuthController@getLogout']);
+Route::get('logout', ['as' => 'public_sign_out', 'uses' => 'Auth\AuthController@getLogout']);
 
 // Registration routes...
 Route::get('auth/register', ['as' => 'public_sign_up', 'uses' => 'Auth\AuthController@getRegister']);
@@ -59,11 +59,25 @@ get('/song/{name}/{album}/{song}', ['as' => 'public_song', 'uses' => 'Frontend\P
 get('/video', ['as' => 'public_video', 'uses' => 'Frontend\PagesController@video']);
 get('/about', ['as' => 'public_about', 'uses' => 'Frontend\PagesController@about']);
 get('/post/{slug}', ['as' => 'public_post', 'uses' => 'Frontend\PostController@show']);
-post('/feedback/send_feedback', ['as' => 'send_feedback', 'uses' => 'Frontend\PagesController@auth']);
+
+$router->resource('feedback', 'Frontend\FeedbackController', [
+    'names' =>[
+        'index' => 'feedback',
+        'show' => 'feedback_show',
+        'store' => 'feedback_store'
+    ],
+    'only' => [
+        'index', 'show', 'store'
+    ]
+]);
 
 // Authenticate user allowed...
-Route::get('profile', [
-    'as' => 'private_profile',
+Route::get('/{slug}', [
+    'as' => 'private_dashboard',
     'middleware' => 'auth',
-    'uses' => 'Management\UsersController@show'
+    'uses' => 'Management\UsersController@dashboard'
 ]);
+
+Route::get('/profile', ['as' => 'private_profile', 'uses' => 'Management\UsersController@show']);
+Route::get('/playlist', ['as' => 'private_playlist', 'uses' => 'Management\UsersController@playlist']);
+Route::get('/favorite', ['as' => 'private_favorite', 'uses' => 'Management\UsersController@favorite']);

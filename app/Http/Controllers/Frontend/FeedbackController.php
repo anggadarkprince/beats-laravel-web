@@ -9,14 +9,41 @@
 namespace App\Http\Controllers\Frontend;
 
 
+use App\Feedback;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateFeedbackRequest;
+use Illuminate\Support\Facades\Lang;
 
 class FeedbackController extends Controller
 {
+    private $fedback;
 
-    public function send_feedback()
+    public function __construct(Feedback $feedback)
     {
+        $this->fedback = $feedback;
+    }
 
+    public function index()
+    {
+        $feedbackData = $this->fedback->get();
+
+        return view('pages.about', compact('feedbackData'));
+    }
+
+    public function show($id)
+    {
+        $feedback = $this->fedback->where('id', $id)->first();
+
+        return view('pages.about', compact('feedback'));
+    }
+
+    public function store(CreateFeedbackRequest $request, Feedback $feedback)
+    {
+        $feedback->create($request->all());
+
+        $request->session()->flash('status', Lang::get('alert.feedback_sent'));
+
+        return redirect()->route('public_about');
     }
 
 }

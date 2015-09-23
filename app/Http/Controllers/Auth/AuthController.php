@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
 use App\User;
+use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Lang;
 use Validator;
-use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\ThrottlesLogins;
-use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
 class AuthController extends Controller
 {
@@ -25,7 +26,10 @@ class AuthController extends Controller
 
     use AuthenticatesAndRegistersUsers, ThrottlesLogins;
 
-    protected $redirectPath = '/auth/login';
+    // when login success
+    protected $redirectPath = '/';
+
+    // when login fail
     protected $loginPath = '/auth/login';
 
     /**
@@ -94,12 +98,14 @@ class AuthController extends Controller
         $password = $request->input('password');
 
         if (Auth::attempt(['email' => $email, 'password' => $password])) {
-            return redirect()->intended('dashboard');
+            $slug = str_slug(Auth::user()->name);
+            $this->redirectPath = $slug;
+            return redirect()->intended($slug);
         }
 
-        $request->session()->flash('status', 'Login was unsuccessful!');
+        $request->session()->flash('status', $this->getFailedLoginMessage());
 
-        return redirect($this->loginPath);
+        return redirect($this->loginPath)->withInput();
     }
 
     /**
@@ -108,6 +114,8 @@ class AuthController extends Controller
     public function getLogout()
     {
         Auth::logout();
+
+        return redirect()->route('public_sign_in');
     }
 
     /**
@@ -131,17 +139,18 @@ class AuthController extends Controller
         $validator = $this->validator($request->all());
 
         if ($validator->fails()) {
-            $request->session()->flash('status', 'Register was unsuccessful!');
+            $request->session()->flash('status', Lang::get('auth.invalid'));
             $this->throwValidationException(
                 $request, $validator
             );
         }
 
         if ($this->create($request->all())){
-            return redirect($this->redirectPath());
+            $request->session()->flash('status', Lang::get('auth.registered'));
+            return redirect()->route('public_sign_in');
         }
         else{
-            $request->session()->flash('status', 'Register was unsuccessful!');
+            $request->session()->flash('status', Lang::get('auth.error'));
             return redirect()->route('public_sign_up');
         }
     }

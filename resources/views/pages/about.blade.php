@@ -6,7 +6,13 @@
     <h2 class="title">About Beats</h2>
     <p class="subtitle">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil non placeat quasi sunt tenetur? Labore, nam sunt. Exercitationem fuga harum ipsum, nobis odio quidem quisquam quod recusandae sed tenetur veritatis?</p>
 
-    {!! Form::open(['route' => 'send_feedback']) !!}
+    @if(Session::has('status'))
+        <div class="alert alert-success">
+            {!! '<p>'.Session::get('status').'</p>' !!}
+        </div>
+    @endif
+
+    {!! Form::open(['route' => 'feedback_store']) !!}
 
     <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
         {!! Form::label('name', 'Name') !!}

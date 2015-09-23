@@ -15,5 +15,8 @@ return [
 
     'failed' => 'These credentials do not match our records.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
+    'registered' => 'Your data had registered at our records',
+    'invalid' => 'The form must be valid as follow',
+    'error' => 'Something is getting wrong, we apologize',
 
 ];

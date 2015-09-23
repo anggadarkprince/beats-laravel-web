@@ -5,6 +5,7 @@
 @section('content')
 
     {!! Form::open(['route' => 'post_sign_up', 'class' => 'form-signin']) !!}
+
         <h2 class="form-signin-heading center-block text-center">BEATS REGISTER</h2>
 
         @if(Session::has('status'))

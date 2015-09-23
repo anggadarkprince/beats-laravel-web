@@ -9,8 +9,19 @@
         <p class="lead">
             Follow the updates and listen your favorite musics. Tons of playlist available everyday.
         </p>
-        <p>{!! link_to_route('public_sign_up','Sign Up Today', [], ['class'=>'btn btn-lg btn-info']) !!}</p>
-        <p>{!! link_to_route('public_sign_in','Have an account? Sign In') !!}</p>
+        @if(!Auth::check())
+            <p>{!! link_to_route('public_sign_up','Sign Up Today', [], ['class'=>'btn btn-lg btn-info']) !!}</p>
+            <p>{!! link_to_route('public_sign_in','Have an account? Sign In') !!}</p>
+        @else
+            <p>Hi, {!! link_to_route('private_profile',Auth::user()->name, [str_slug(Auth::user()->name)]) !!} welcome back!</p>
+            <span class="hidden-xs">
+                <i class="glyphicon glyphicon-home"></i> {!! link_to_route('private_dashboard','HOME', [str_slug(Auth::user()->name)]) !!} &nbsp; | &nbsp;
+                <i class="glyphicon glyphicon-user"></i> {!! link_to_route('private_profile','PROFILE') !!} &nbsp; | &nbsp;
+                <i class="glyphicon glyphicon-play"></i> {!! link_to_route('private_playlist','PLAYLIST') !!} &nbsp; | &nbsp;
+                <i class="glyphicon glyphicon-heart"></i> {!! link_to_route('private_favorite','FAVORITE') !!} &nbsp; | &nbsp;
+                <i class="glyphicon glyphicon-log-out"></i> {!! link_to_route('public_sign_out','LOGOUT') !!}
+            </span>
+        @endif
     </div>
 
 @stop

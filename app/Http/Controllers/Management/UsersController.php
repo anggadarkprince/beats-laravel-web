@@ -3,12 +3,20 @@
 namespace App\Http\Controllers\Management;
 
 use App\Http\Controllers\Controller;
+use App\User;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -17,6 +25,27 @@ class UsersController extends Controller
     public function index()
     {
         //
+    }
+
+    public function dashboard($slug)
+    {
+        $user = new User();
+
+        $name = str_replace('-',' ', $slug);
+
+        $userData = $user->where('name', 'like', '%'.$name.'%')->firstOrFail();
+
+        return view('pages.user', compact('userData'));
+    }
+
+    public function playlist($slug)
+    {
+
+    }
+
+    public function favorite($slug)
+    {
+
     }
 
     /**
@@ -46,9 +75,9 @@ class UsersController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function show($id)
+    public function show($slug)
     {
-        //
+        return $slug;
     }
 
     /**
