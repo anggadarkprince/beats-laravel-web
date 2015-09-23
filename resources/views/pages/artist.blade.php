@@ -3,28 +3,20 @@
 @section('page', $artistData->name)
 
 @section('content')
-    <div class="media profile">
-        <a class="pull-left" href="#">
-            <img class="img-responsive" src="/img/avatar/{{ $artistData->avatar }}" style="width: 140px; height: 140px;">
-        </a>
-        <div class="media-body">
-            <h2 class="title">{{ $artistData->name }}</h2>
-            <p>{{ $artistData->about }}</p>
-            <p class="text-muted">{{ $artistData->birthplace }} | {{ $artistData->birthday }}</p>
-        </div>
-    </div>
+
+    @include('pages._artist_profile')
 
     <h3 class="profile-label">Albums</h3>
     <div class="song">
         @forelse($albums as $album)
 
             <div class="media song-list">
-                <a class="pull-left" href="{{ route('public_album',[Request::segment(2), $album->slug]) }}">
+                <a class="pull-left" href="{{ route('public_album',[Request::segment(2), $album->album_slug]) }}">
                     <img class="media-object" src="/img/cover/{{ $album->cover }}" style="width: 64px; height: 64px;">
                 </a>
                 <div class="media-body">
                     <div class="pull-left">
-                        <h4 class="title">{{ $album->title }}</h4>
+                        <h4 class="title">{!! link_to_route('public_album', $album->album_title, [Request::segment(2), $album->album_slug]) !!}</h4>
                         <p class="artist text-muted">{{ $artistData->name }}</p>
                     </div>
                     <div class="pull-right text-right">

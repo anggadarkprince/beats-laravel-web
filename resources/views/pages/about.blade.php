@@ -1,5 +1,7 @@
 @extends('template')
 
+@section('page', $page)
+
 @section('content')
     <h2 class="title">About Beats</h2>
     <p class="subtitle">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil non placeat quasi sunt tenetur? Labore, nam sunt. Exercitationem fuga harum ipsum, nobis odio quidem quisquam quod recusandae sed tenetur veritatis?</p>

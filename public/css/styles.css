@@ -7,7 +7,7 @@ body {
 a{
     color: #5bc0de;
 }
-a:hover{
+a:hover, a:focus{
     text-decoration: none;
     color: #31b0d5;
 }
@@ -237,6 +237,9 @@ p.subtitle{
 }
 .post header{
     margin-bottom: 30px;
+}
+.post .share{
+    margin: 35px 0;
 }
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {

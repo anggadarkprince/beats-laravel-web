@@ -10,12 +10,12 @@
         @foreach($hits as $hit)
 
             <div class="media song-list">
-                <a class="pull-left" href="#">
+                <a class="pull-left" href="{{ route('public_song',[$hit->artist_slug, $hit->album_slug, $hit->song_slug]) }}">
                     <img class="media-object" src="/img/cover/{{ $hit->cover }}" style="width: 64px; height: 64px;">
                 </a>
                 <div class="media-body">
                     <div class="pull-left">
-                        <h4 class="title">{{ $hit->title }}</h4>
+                        <h4 class="title">{!! link_to_route('public_song', $hit->title, [$hit->artist_slug, $hit->album_slug, $hit->song_slug]) !!}</h4>
                         <p class="artist">{{ $hit->name }}</p>
                     </div>
                     <div class="pull-right text-right">

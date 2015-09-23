@@ -24,48 +24,52 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 });
 
 $factory->define(App\Artist::class, function (Faker\Generator $faker) {
+    $name = $faker->name;
     return [
-        'name' => $faker->name,
+        'name' => $name,
         'avatar' => 'avatar ('.rand(1,7).').jpg',
         'about' => $faker->paragraph,
         'birthday' => $faker->dateTime,
         'birthplace' => $faker->city.', '.$faker->country,
-        'slug' => str_random(10)
+        'slug' => str_slug($name)
     ];
 });
 
 $factory->define(App\Album::class, function (Faker\Generator $faker) {
+    $title = implode(' ', $faker->words);
     return [
         'artist' => rand(1,30),
-        'title' => ucwords(implode(' ', $faker->words)),
+        'title' => ucwords($title),
         'cover' => 'cover ('.rand(1,55).').jpg',
         'description' => $faker->paragraph,
         'label' => ucfirst($faker->word),
         'released' => $faker->dateTime,
-        'slug' => str_random(10)
+        'slug' => str_slug($title)
     ];
 });
 
 $factory->define(App\Song::class, function (Faker\Generator $faker) {
+    $title = implode(' ', $faker->words);
     return [
         'album' => rand(1,100),
-        'title' => ucwords(implode(' ', $faker->words)),
-        'lyrics' => implode("<br><br>", $faker->paragraphs),
+        'title' => ucwords($title),
+        'lyrics' => implode("<br><br>", $faker->paragraphs).' '.implode("<br><br>", $faker->paragraphs),
         'writer' => $faker->name,
         'music' => $faker->name,
         'duration' => $faker->time(),
         'is_hits' => rand(0, 1),
-        'slug' => str_random(10)
+        'slug' => str_slug($title)
     ];
 });
 
 $factory->define(App\Post::class, function (Faker\Generator $faker) {
+    $title = implode(' ', $faker->words);
     return [
         'artist' => rand(1,30),
         'author' => rand(1,50),
-        'title' => ucwords(implode(' ', $faker->words)),
+        'title' => ucwords($title),
         'content' => implode("<br><br>", $faker->paragraphs),
-        'slug' => str_random(10)
+        'slug' => str_slug($title)
     ];
 });
 
@@ -85,7 +89,7 @@ $factory->define(App\Playlist::class, function (Faker\Generator $faker) {
     ];
 });
 
-$factory->define(App\PlaylistSong::class, function (Faker\Generator $faker) {
+$factory->define(App\PlaylistSong::class, function () {
     return [
         'playlist' => rand(1,200),
         'song' => rand(1,300)
@@ -93,11 +97,12 @@ $factory->define(App\PlaylistSong::class, function (Faker\Generator $faker) {
 });
 
 $factory->define(App\Video::class, function (Faker\Generator $faker) {
+    $title = implode(' ', $faker->words);
     return [
         'artist' => rand(1,30),
-        'title' => ucwords(implode(' ', $faker->words)),
+        'title' => ucwords($title),
         'description' => $faker->paragraph,
         'resource' => 'video ('.rand(1,3).').flv',
-        'slug' => str_random(10)
+        'slug' => str_slug($title)
     ];
 });

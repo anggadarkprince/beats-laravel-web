@@ -1,5 +1,7 @@
 @extends('template')
 
+@section('page', $page)
+
 @section('content')
     <h2 class="title">Featured Videos</h2>
     <p class="subtitle">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum dicta, dolores earum esse est et eum expedita fuga incidunt iure magnam natus necessitatibus obcaecati repudiandae tempore, totam, unde voluptas voluptatibus.</p>

@@ -1,5 +1,7 @@
 @extends('template')
 
+@section('page', $page)
+
 @section('content')
 
     {!! Form::open(['route' => 'post_auth', 'class' => 'form-signin']) !!}

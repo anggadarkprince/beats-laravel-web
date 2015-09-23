@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Post;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -43,12 +44,18 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int  $slug
      * @return Response
      */
-    public function show($id = null)
+    public function show($slug = null)
     {
-        return view('pages.post');
+        $post = new Post();
+
+        $article = $post->whereSlug($slug)->firstOrFail();
+
+        $author = $article->author()->firstOrFail();
+
+        return view('pages.post', compact('article', 'author'));
     }
 
     /**

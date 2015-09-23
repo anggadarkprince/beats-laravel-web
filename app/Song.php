@@ -18,7 +18,7 @@ class Song extends Model
 
     public function getHitsSong()
     {
-        $hits = Song::select('songs.id', 'songs.title as title', 'albums.title as album', 'name', 'duration', 'cover')
+        $hits = $this->select('songs.id', 'songs.title as title', 'albums.title as album', 'name', 'duration', 'cover', 'artists.slug as artist_slug', 'albums.slug as album_slug', 'songs.slug as song_slug')
             ->where('is_hits', 1)
             ->orderBy('songs.title', 'asc')
             ->join('albums', 'albums.id', '=', 'songs.album')

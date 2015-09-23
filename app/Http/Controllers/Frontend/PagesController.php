@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Album;
 use App\Artist;
 use App\Song;
-use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\App;
 
 class PagesController extends Controller
 {
+    private $artist;
+    private $album;
+    private $song;
+
     /**
+     * show homepage
      * Display a listing of the resource.
      *
      * @return Response
@@ -26,6 +30,12 @@ class PagesController extends Controller
         return view('pages.home', compact('featured', 'page'));
     }
 
+    /**
+     * show hits page
+     * get all hits songs limit 10 data
+     *
+     * @return \Illuminate\View\View
+     */
     public function hits()
     {
         $page = "Song Hits";
@@ -37,6 +47,12 @@ class PagesController extends Controller
         return view('pages.hits', compact('hits', 'page'));
     }
 
+    /**
+     * show artists page
+     * get all artists with pagination 10 data each
+     *
+     * @return \Illuminate\View\View
+     */
     public function artists()
     {
         $page = "Artists and Singers";
@@ -48,13 +64,16 @@ class PagesController extends Controller
         return view('pages.artists', compact('artists', 'page'));
     }
 
+    /**
+     * select an artist
+     * show artist profile, albums, videos, and articles
+     *
+     * @param $artistSlug
+     * @return \Illuminate\View\View
+     */
     public function artist($artistSlug)
     {
-        $page = "Artist";
-
-        $artist = new Artist();
-
-        $artistData = $artist->whereSlug($artistSlug)->firstOrFail();
+        $artistData = $this->_artistsBySlug($artistSlug);
 
         $albums = $artistData->albums()->get();
 
@@ -65,34 +84,134 @@ class PagesController extends Controller
         return view('pages.artist', compact('artistData', 'albums', 'videos', 'posts', 'page'));
     }
 
-    public function album($name, $album)
+    /**
+     * select an album by related artist
+     * show all song related by selected album
+     *
+     * @param $artistSlug
+     * @param $albumSlug
+     * @return \Illuminate\View\View
+     */
+    public function album($artistSlug, $albumSlug)
     {
-        return view('pages.album');
+        $artistData = $this->_artistsBySlug($artistSlug);
+
+        $albumData = $this->_albumBySlug($albumSlug);
+
+        $songs = $albumData->songs()->get();
+
+        return view('pages.album', compact('artistData', 'albumData', 'songs'));
     }
 
-    public function song($name, $album, $song)
+    /**
+     * select a song by related album
+     * show lyric and info related by selected song
+     *
+     * @param $artistSlug
+     * @param $albumSlug
+     * @param $songSlug
+     * @return \Illuminate\View\View
+     */
+    public function song($artistSlug, $albumSlug, $songSlug)
     {
-        return view('pages.song');
+        $artistData = $this->_artistsBySlug($artistSlug);
+
+        $albumData = $this->_albumBySlug($albumSlug);
+
+        $songData = $this->_songBySlug($songSlug);
+
+        return view('pages.song', compact('artistData', 'albumData', 'songData'));
     }
 
+    /**
+     * show video page
+     *
+     * @return \Illuminate\View\View
+     */
     public function video()
     {
-        return view('pages.video');
+        $page = "Music Video";
+
+        return view('pages.video', compact('page'));
     }
 
+    /**
+     * show about page
+     *
+     * @return \Illuminate\View\View
+     */
     public function about()
     {
-        return view('pages.about');
+        $page = "Contact Us";
+
+        return view('pages.about', compact('page'));
     }
 
+    /**
+     * @return \Illuminate\View\View
+     */
     public function login()
     {
-        return view('pages.login');
+        $page = "Sign Up";
+
+        return view('pages.login', compact('page'));
     }
 
+    /**
+     * show register page
+     *
+     * @return \Illuminate\View\View
+     */
     public function register()
     {
-        return view('pages.register');
+        $page = "Register";
+
+        return view('pages.register', compact('page'));
+    }
+
+    /**
+     * retrieve artist data by slug
+     *
+     * @param $artistSlug
+     * @return mixed
+     */
+    private function _artistsBySlug($artistSlug)
+    {
+        $this->artist = new Artist();
+
+        $artistData = $this->artist->whereSlug($artistSlug)->firstOrFail();
+
+        return $artistData;
+    }
+
+    /**
+     * retrieve album data by slug
+     *
+     * @param $albumSlug
+     * @return mixed
+     */
+    private function _albumBySlug($albumSlug)
+    {
+        $this->album = new Album();
+
+        $albumData = $this->album->where("slug", $albumSlug)->firstOrFail();
+
+        return $albumData;
+    }
+
+    /**
+     * retrieve song by slug
+     *
+     * @param $songSlug
+     * @return mixed
+     */
+    private function _songBySlug($songSlug)
+    {
+        $this->song = new Song();
+
+        $songData = $this->song->whereSlug($songSlug)->firstOrFail();
+
+        return $songData;
     }
 
 }

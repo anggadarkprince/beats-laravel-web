@@ -18,7 +18,7 @@ class Artist extends Model
 
     public function getArtistWithAlbum()
     {
-        $artists = Artist::selectRaw('artists.id, artists.name, avatar, artists.slug, title, cover, count(*) as album_total')
+        $artists = $this->selectRaw('artists.id, artists.name, avatar, artists.slug, title, cover, count(*) as album_total')
             ->leftJoin('albums', 'artists.id', '=', 'albums.artist')
             ->groupBy('artists.id')
             ->orderBy('artists.name', 'asc')
@@ -30,7 +30,7 @@ class Artist extends Model
     public function albums()
     {
         return $this->hasMany('App\Album', 'artist')
-            ->selectRaw('*, count(*) as song_total')
+            ->selectRaw('*, albums.title as album_title, albums.slug as album_slug, count(songs.id) as song_total')
             ->leftJoin('songs', 'albums.id', '=', 'songs.album')
             ->orderBy('released', 'asc')
             ->groupBy('albums.id');
