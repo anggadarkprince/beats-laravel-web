@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -22,6 +24,9 @@ class AuthController extends Controller
     */
 
     use AuthenticatesAndRegistersUsers, ThrottlesLogins;
+
+    protected $redirectPath = '/auth/login';
+    protected $loginPath = '/auth/login';
 
     /**
      * Create a new authentication controller instance.
@@ -45,6 +50,7 @@ class AuthController extends Controller
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|confirmed|min:6',
+            'agree' => 'required'
         ]);
     }
 
@@ -60,17 +66,84 @@ class AuthController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
+            'level' => 'USER'
         ]);
     }
 
-    public function auth()
+    /**
+     * @return \Illuminate\View\View
+     */
+    public function getLogin()
     {
+        $page = "Sign In";
 
+        return view('auth.login', compact('page'));
     }
 
-    public function register()
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function postLogin(Request $request)
     {
+        $this->validate($request, [
+            $this->loginUsername() => 'required', 'password' => 'required',
+        ]);
 
+        $email = $request->input('email');
+        $password = $request->input('password');
+
+        if (Auth::attempt(['email' => $email, 'password' => $password])) {
+            return redirect()->intended('dashboard');
+        }
+
+        $request->session()->flash('status', 'Login was unsuccessful!');
+
+        return redirect($this->loginPath);
+    }
+
+    /**
+     * logout authenticated user
+     */
+    public function getLogout()
+    {
+        Auth::logout();
+    }
+
+    /**
+     * show register page
+     *
+     * @return \Illuminate\View\View
+     */
+    public function getRegister()
+    {
+        $page = "Register";
+
+        return view('auth.register', compact('page'));
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function postRegister(Request $request)
+    {
+        $validator = $this->validator($request->all());
+
+        if ($validator->fails()) {
+            $request->session()->flash('status', 'Register was unsuccessful!');
+            $this->throwValidationException(
+                $request, $validator
+            );
+        }
+
+        if ($this->create($request->all())){
+            return redirect($this->redirectPath());
+        }
+        else{
+            $request->session()->flash('status', 'Register was unsuccessful!');
+            return redirect()->route('public_sign_up');
+        }
     }
 
 }

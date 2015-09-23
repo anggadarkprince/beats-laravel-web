@@ -40,6 +40,16 @@ $router->resource('people', 'PeopleController',[
 
 */
 
+// Authentication routes...
+Route::get('auth/login', ['as' => 'public_sign_in', 'uses' => 'Auth\AuthController@getLogin']);
+Route::post('auth/login', ['as' => 'post_sign_in', 'uses' => 'Auth\AuthController@postLogin']);
+Route::get('auth/logout', ['as' => 'public_sign_out', 'uses' => 'Auth\AuthController@getLogout']);
+
+// Registration routes...
+Route::get('auth/register', ['as' => 'public_sign_up', 'uses' => 'Auth\AuthController@getRegister']);
+Route::post('auth/register', ['as' => 'post_sign_up', 'uses' => 'Auth\AuthController@postRegister']);
+
+// Public routes...
 get('/', ['as' => 'public_home', 'uses' => 'Frontend\PagesController@index']);
 get('/hits', ['as' => 'public_hits', 'uses' => 'Frontend\PagesController@hits']);
 get('/artist', ['as' => 'public_artists', 'uses' => 'Frontend\PagesController@artists']);
@@ -48,11 +58,12 @@ get('/album/{name}/{album}', ['as' => 'public_album', 'uses' => 'Frontend\PagesC
 get('/song/{name}/{album}/{song}', ['as' => 'public_song', 'uses' => 'Frontend\PagesController@song']);
 get('/video', ['as' => 'public_video', 'uses' => 'Frontend\PagesController@video']);
 get('/about', ['as' => 'public_about', 'uses' => 'Frontend\PagesController@about']);
-get('/login', ['as' => 'public_sign_in', 'uses' => 'Frontend\PagesController@login']);
-get('/register', ['as' => 'public_sign_up', 'uses' => 'Frontend\PagesController@register']);
 get('/post/{slug}', ['as' => 'public_post', 'uses' => 'Frontend\PostController@show']);
-
-post('/auth',['as' => 'post_auth', 'uses' => 'Auth.AuthController@auth']);
-post('/register_user', ['as' => 'post_register', 'uses' => 'Auth.AuthController@register']);
-
 post('/feedback/send_feedback', ['as' => 'send_feedback', 'uses' => 'Frontend\PagesController@auth']);
+
+// Authenticate user allowed...
+Route::get('profile', [
+    'as' => 'private_profile',
+    'middleware' => 'auth',
+    'uses' => 'Management\UsersController@show'
+]);

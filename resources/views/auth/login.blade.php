@@ -4,7 +4,7 @@
 
 @section('content')
 
-    {!! Form::open(['route' => 'post_auth', 'class' => 'form-signin']) !!}
+    {!! Form::open(['route' => 'post_sign_in', 'class' => 'form-signin']) !!}
         <h2 class="form-signin-heading center-block text-center">SIGN IN</h2>
 
         <input type="text" class="form-control" placeholder="Email address" required autofocus>

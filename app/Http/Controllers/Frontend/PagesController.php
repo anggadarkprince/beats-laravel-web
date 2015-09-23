@@ -148,28 +148,6 @@ class PagesController extends Controller
     }
 
     /**
-     * @return \Illuminate\View\View
-     */
-    public function login()
-    {
-        $page = "Sign Up";
-
-        return view('pages.login', compact('page'));
-    }
-
-    /**
-     * show register page
-     *
-     * @return \Illuminate\View\View
-     */
-    public function register()
-    {
-        $page = "Register";
-
-        return view('pages.register', compact('page'));
-    }
-
-    /**
      * retrieve artist data by slug
      *
      * @param $artistSlug
