@@ -18,7 +18,10 @@ class Post extends Model
 
     public function comments()
     {
-        return $this->hasMany('App\Post', 'post');
+        return $this->hasMany('App\Comment', 'post')
+            ->selectRaw('*, comments.created_at as created_at')
+            ->join('users', 'comments.user', '=', 'users.id')
+            ->orderBy('comments.created_at', 'asc');
     }
 
     public function author()

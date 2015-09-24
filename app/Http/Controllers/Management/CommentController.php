@@ -1,15 +1,26 @@
 <?php
 
-namespace App\Http\Controllers\Frontend;
+namespace App\Http\Controllers\Management;
 
+use App\Comment;
 use App\Post;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Lang;
 
-class PostController extends Controller
+class CommentController extends Controller
 {
+    private $comment;
+
+    public function __construct(Comment $comment)
+    {
+        $this->comment = $comment;
+        $this->middleware('auth', ['only' => 'store']);
+    }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +28,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+
     }
 
     /**
@@ -33,31 +44,35 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  Request  $request
+     * @param  Request $request
+     * @param Post $post
+     * @param $slug
      * @return Response
+     * @internal param Comment $comment
      */
-    public function store(Request $request)
+    public function store(Request $request, Post $post, $slug)
     {
-        //
+        $article = $post->where('slug', $slug)->firstOrFail();
+
+        $request->merge(['user' => Auth::user()->id]);
+        $request->merge(['post' => $article->id]);
+
+        $this->comment->create($request->all());
+
+        $request->session()->flash('status', Lang::get('alert.comment_sent'));
+
+        return redirect()->route('public_post', [$slug]);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $slug
+     * @param  int  $id
      * @return Response
      */
-    public function show($slug = null)
+    public function show($id)
     {
-        $post = new Post();
-
-        $article = $post->whereSlug($slug)->firstOrFail();
-
-        $author = $article->author()->firstOrFail();
-
-        $comments = $article->comments()->get();
-
-        return view('pages.post', compact('article', 'author', 'comments'));
+        //
     }
 
     /**

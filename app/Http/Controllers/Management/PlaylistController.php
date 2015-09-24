@@ -11,6 +11,12 @@ use Illuminate\Support\Facades\Lang;
 
 class PlaylistController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -66,7 +72,11 @@ class PlaylistController extends Controller
      */
     public function show(Playlist $playlist)
     {
-        return view('playlist.show', compact('playlist'));
+        $userData = Auth::user();
+
+        $songs = $playlist->songs()->get();
+
+        return view('playlist.show', compact('userData', 'playlist', 'songs'));
     }
 
     /**

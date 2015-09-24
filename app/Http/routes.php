@@ -80,12 +80,14 @@ $router->resource('feedback', 'Frontend\FeedbackController', [
     ]
 ]);
 
+post('/comment/{slug}', ['as' => 'comment_store', 'uses' => 'Management\CommentController@store']);
+
 // Authenticate user allowed...
 Route::get('/playlist', ['as' => 'private_playlist', 'uses' => 'Management\PlaylistController@index']);
 Route::get('/setting', ['as' => 'private_setting', 'uses' => 'Management\UserController@setting']);
 Route::get('/{slug}', [
     'as' => 'private_profile',
-    'middleware' => 'auth',
+    //'middleware' => 'auth',
     'uses' => 'Management\UserController@show'
 ]);
 

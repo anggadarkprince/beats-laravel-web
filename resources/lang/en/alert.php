@@ -16,11 +16,13 @@ return [
     'unvalidated' => 'Your inputs data are invalid, please check again',
 
     'feedback_sent' => 'Your feedback has been sent, thanks.',
-    'feedback_sent' => 'Feedback has been deleted.',
+    'feedback_deleted' => 'Feedback has been deleted.',
 
     'playlist_created' => 'Playlist has been created.',
     'playlist_updated' => 'Playlist has been updated.',
     'playlist_deleted' => 'Playlist has been deleted.',
 
     'setting_updated' => 'Setting has been updated',
+
+    'comment_sent' => 'Your comment has been sent, thanks.',
 ];

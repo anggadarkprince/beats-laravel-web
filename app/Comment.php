@@ -15,6 +15,7 @@ class Comment extends Model
 {
     protected $table = 'comments';
     protected $primaryKey = 'id';
+    protected $fillable = ['user', 'post', 'comment'];
 
     public function post()
     {

@@ -222,7 +222,6 @@ p.subtitle{
     font-size: 18px;
 }
 
-
 .media > .pull-left {
     margin-right: 20px;
     padding-right: 0;
@@ -252,6 +251,22 @@ p.subtitle{
 }
 .playlist{
     margin-bottom: 40px;
+}
+.comment{
+    margin-bottom: 40px;
+}
+.comment .form-comment{
+    margin: 20px 0 50px;
+}
+.comment .media{
+    overflow: hidden;
+    margin-bottom: 25px;
+}
+.comment .media:last-child{
+    margin-bottom: 50px;
+}
+.comment .media p{
+    margin-bottom: 5px;
 }
 .post{
     padding-bottom: 15px;
