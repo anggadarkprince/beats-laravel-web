@@ -40,6 +40,14 @@ $router->resource('people', 'PeopleController',[
 
 */
 
+get('music', ['as' => 'songs_path', 'uses' => 'Management\SongsController@index']);
+get('music/create', ['as' => 'song_create_path', 'uses' => 'Management\SongsController@create']);
+get('music/{song}', ['as' => 'song_path', 'uses' => 'Management\SongsController@show']);
+get('music/{slug}/edit', ['as' => 'song_edit_path', 'uses' => 'Management\SongsController@edit']);
+patch('music/{slug}', ['as' => 'song_update_path', 'uses' => 'Management\SongsController@update']);
+post('music', ['as' => 'song_store_path', 'uses' => 'Management\SongsController@store']);
+delete('music/{slug}', ['as' => 'song_destroy_path', 'uses' => 'Management\SongsController@destroy']);
+
 // Authentication routes...
 Route::get('auth/login', ['as' => 'public_sign_in', 'uses' => 'Auth\AuthController@getLogin']);
 Route::post('auth/login', ['as' => 'post_sign_in', 'uses' => 'Auth\AuthController@postLogin']);
@@ -63,9 +71,9 @@ get('/post/{slug}', ['as' => 'public_post', 'uses' => 'Frontend\PostController@s
 
 $router->resource('feedback', 'Frontend\FeedbackController', [
     'names' =>[
-        'index' => 'feedback',
-        'show' => 'feedback_show',
-        'store' => 'feedback_store'
+        'index'     => 'feedback',
+        'show'      => 'feedback_show',
+        'store'     => 'feedback_store'
     ],
     'only' => [
         'index', 'show', 'store'
@@ -79,4 +87,19 @@ Route::get('/{slug}', [
     'as' => 'private_profile',
     'middleware' => 'auth',
     'uses' => 'Management\UsersController@show'
+]);
+
+Route::bind('playlist', function($id){
+    return \App\Playlist::find($id);
+});
+$router->resource('playlist', 'Management\PlaylistController', [
+    'names' =>[
+        'index'     => 'playlist',
+        'show'      => 'playlist_show',
+        'create'    => 'playlist_create',
+        'edit'      => 'playlist_edit',
+        'store'     => 'playlist_store',
+        'update'    => 'playlist_update',
+        'destroy'   => 'playlist_destroy',
+    ]
 ]);

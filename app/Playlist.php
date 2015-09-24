@@ -15,6 +15,7 @@ class Playlist extends Model
 {
     protected $table = 'playlist';
     protected $primaryKey = 'id';
+    protected $fillable = ['creator', 'list', 'description'];
 
     public function user()
     {

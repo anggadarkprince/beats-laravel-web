@@ -12,7 +12,12 @@ return [
     |
     */
 
-    'feedback_sent' => 'Your feedback has been sent, thanks.',
-    'feedback_failed' => 'Something is getting wrong, try again',
+    'alert_failed' => 'Something is getting wrong, try again',
 
+    'feedback_sent' => 'Your feedback has been sent, thanks.',
+    'feedback_sent' => 'Feedback has been deleted.',
+
+    'playlist_created' => 'Playlist has been created.',
+    'playlist_updated' => 'Playlist has been updated.',
+    'playlist_deleted' => 'Playlist has been deleted.',
 ];

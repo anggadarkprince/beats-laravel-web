@@ -48,6 +48,10 @@ class User extends Model implements AuthenticatableContract,
 
     public function playlist()
     {
-        return $this->hasMany('App\Playlist', 'creator');
+        return $this->hasMany('App\Playlist', 'creator')
+            ->selectRaw('*, playlist.id as id, count(playlist_songs.id) as song_total')
+            ->leftJoin('playlist_songs', 'playlist.id', '=', 'playlist_songs.playlist')
+            ->orderBy('list', 'asc')
+            ->groupBy('playlist.id');
     }
 }

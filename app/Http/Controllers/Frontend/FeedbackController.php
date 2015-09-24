@@ -16,23 +16,23 @@ use Illuminate\Support\Facades\Lang;
 
 class FeedbackController extends Controller
 {
-    private $fedback;
+    private $feedback;
 
     public function __construct(Feedback $feedback)
     {
-        $this->fedback = $feedback;
+        $this->feedback = $feedback;
     }
 
     public function index()
     {
-        $feedbackData = $this->fedback->get();
+        $feedbackData = $this->feedback->get();
 
         return view('pages.about', compact('feedbackData'));
     }
 
     public function show($id)
     {
-        $feedback = $this->fedback->where('id', $id)->first();
+        $feedback = $this->feedback->where('id', $id)->first();
 
         return view('pages.about', compact('feedback'));
     }

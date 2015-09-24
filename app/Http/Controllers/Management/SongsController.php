@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Management;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateSongRequest;
 use App\Song;
 use Illuminate\Http\Request;
