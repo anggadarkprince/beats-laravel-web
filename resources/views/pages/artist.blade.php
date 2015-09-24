@@ -39,8 +39,12 @@
         <div class="row">
             @forelse($videos as $video)
 
-                <div class="col-md-3 col-sm-6">
-                    <video src="/vid/{{ $video->resource }}" style="width: 140px; height: 140px;" controls></video>
+                <div class="col-md-4 col-sm-6">
+                    <div class="video">
+                        <a href="{{ route('public_show_video', [$video->slug]) }}">
+                            <img src="\vid\{{ $video->poster }}" class="img-responsive">
+                        </a>
+                    </div>
                 </div>
 
             @empty

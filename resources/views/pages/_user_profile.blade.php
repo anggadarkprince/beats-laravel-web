@@ -3,7 +3,7 @@
 
     <div class="media-body">
         <h2 class="title">{!! $userData->name !!}</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A, aliquam cum cumque deleniti dolor eum excepturi exercitationem fuga hic ipsa iste magnam, molestiae molestias pariatur placeat quaerat rem voluptas voluptatibus.</p>
-        <p class="text-muted">Male | User | Join since 2011</p>
+        <p>@if($userData->about == null) No profile description written @else {!! $userData->about !!} @endif</p>
+        <p class="text-muted">@if($userData->status == null) No Status @else {!! $userData->status !!} @endif | {{ $userData->gender }} | Joined since {{ date_format(date_create($userData->created_at), 'Y') }}</p>
     </div>
 </div>

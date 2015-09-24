@@ -8,6 +8,7 @@ use App\Song;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Video;
 
 class PagesController extends Controller
 {
@@ -132,7 +133,11 @@ class PagesController extends Controller
     {
         $page = "Music Video";
 
-        return view('pages.video', compact('page'));
+        $video = new Video();
+
+        $videoData = $video->getAllVideo();
+
+        return view('pages.video', compact('page', 'videoData'));
     }
 
     /**

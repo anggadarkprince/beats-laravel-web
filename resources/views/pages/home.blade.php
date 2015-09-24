@@ -15,11 +15,10 @@
         @else
             <p>Hi, {!! link_to_route('private_profile',Auth::user()->name, [str_slug(Auth::user()->name)]) !!} welcome back!</p>
             <span class="hidden-xs">
-                <i class="glyphicon glyphicon-home"></i> {!! link_to_route('private_dashboard','HOME', [str_slug(Auth::user()->name)]) !!} &nbsp; | &nbsp;
-                <i class="glyphicon glyphicon-user"></i> {!! link_to_route('private_profile','PROFILE') !!} &nbsp; | &nbsp;
+                <i class="glyphicon glyphicon-user"></i> {!! link_to_route('private_profile','PROFILE', [str_slug(Auth::user()->name)]) !!} &nbsp; | &nbsp;
                 <i class="glyphicon glyphicon-play"></i> {!! link_to_route('private_playlist','PLAYLIST') !!} &nbsp; | &nbsp;
-                <i class="glyphicon glyphicon-heart"></i> {!! link_to_route('private_favorite','FAVORITE') !!} &nbsp; | &nbsp;
-                <i class="glyphicon glyphicon-log-out"></i> {!! link_to_route('public_sign_out','LOGOUT') !!}
+                <i class="glyphicon glyphicon-wrench"></i> {!! link_to_route('private_setting','SETTING') !!} &nbsp; | &nbsp;
+                <i class="glyphicon glyphicon-log-out"></i> {!! link_to_route('private_sign_out','LOGOUT') !!}
             </span>
         @endif
     </div>

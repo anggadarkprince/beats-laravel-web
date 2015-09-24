@@ -20,4 +20,9 @@ class Video extends Model
     {
         return $this->belongsTo('App\Artist', 'artist');
     }
+
+    public function getAllVideo()
+    {
+        return $this->selectRaw("*, videos.slug as videoSlug")->join('artists', 'videos.artist', '=', 'artists.id')->paginate(10);
+    }
 }

@@ -43,7 +43,7 @@ $router->resource('people', 'PeopleController',[
 // Authentication routes...
 Route::get('auth/login', ['as' => 'public_sign_in', 'uses' => 'Auth\AuthController@getLogin']);
 Route::post('auth/login', ['as' => 'post_sign_in', 'uses' => 'Auth\AuthController@postLogin']);
-Route::get('logout', ['as' => 'public_sign_out', 'uses' => 'Auth\AuthController@getLogout']);
+Route::get('logout', ['as' => 'private_sign_out', 'uses' => 'Auth\AuthController@getLogout']);
 
 // Registration routes...
 Route::get('auth/register', ['as' => 'public_sign_up', 'uses' => 'Auth\AuthController@getRegister']);
@@ -57,6 +57,7 @@ get('/artist/{name}', ['as' => 'public_artist', 'uses' => 'Frontend\PagesControl
 get('/album/{name}/{album}', ['as' => 'public_album', 'uses' => 'Frontend\PagesController@album']);
 get('/song/{name}/{album}/{song}', ['as' => 'public_song', 'uses' => 'Frontend\PagesController@song']);
 get('/video', ['as' => 'public_video', 'uses' => 'Frontend\PagesController@video']);
+get('/video/{slug}', ['as' => 'public_show_video', 'uses' => 'Management\VideosController@show']);
 get('/about', ['as' => 'public_about', 'uses' => 'Frontend\PagesController@about']);
 get('/post/{slug}', ['as' => 'public_post', 'uses' => 'Frontend\PostController@show']);
 
@@ -72,12 +73,10 @@ $router->resource('feedback', 'Frontend\FeedbackController', [
 ]);
 
 // Authenticate user allowed...
+Route::get('/playlist', ['as' => 'private_playlist', 'uses' => 'Management\PlaylistController@index']);
+Route::get('/setting', ['as' => 'private_setting', 'uses' => 'Management\UsersController@setting']);
 Route::get('/{slug}', [
-    'as' => 'private_dashboard',
+    'as' => 'private_profile',
     'middleware' => 'auth',
-    'uses' => 'Management\UsersController@dashboard'
+    'uses' => 'Management\UsersController@show'
 ]);
-
-Route::get('/profile', ['as' => 'private_profile', 'uses' => 'Management\UsersController@show']);
-Route::get('/playlist', ['as' => 'private_playlist', 'uses' => 'Management\UsersController@playlist']);
-Route::get('/favorite', ['as' => 'private_favorite', 'uses' => 'Management\UsersController@favorite']);

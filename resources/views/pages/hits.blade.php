@@ -7,7 +7,7 @@
     <p class="subtitle">Lorem ipsum dolor sit amet, consectetur adipisicing elit. A autem culpa dolorum enim error non nostrum obcaecati officiis quisquam velit. At consequatur dicta impedit placeat soluta! Dicta dolor eligendi necessitatibus?</p>
 
     <div class="song">
-        @foreach($hits as $hit)
+        @forelse($hits as $hit)
 
             <div class="media song-list">
                 <a class="pull-left" href="{{ route('public_song',[$hit->artist_slug, $hit->album_slug, $hit->song_slug]) }}">
@@ -25,7 +25,11 @@
                 </div>
             </div>
 
-        @endforeach
+        @empty
+
+            <p class="text-center center-block">No hits available</p>
+
+        @endforelse
 
     </div>
 

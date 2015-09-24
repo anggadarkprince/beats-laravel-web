@@ -18,6 +18,7 @@ class CreateVideosTable extends Migration
             $table->string('title', 50);
             $table->string('description', 250);
             $table->string('resource');
+            $table->string('poster');
             $table->string('slug')->unique();
             $table->timestamps();
 

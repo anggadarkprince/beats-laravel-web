@@ -10,6 +10,7 @@
 
     <title>BEATS - @yield('page')</title>
     <link rel="stylesheet" href="/css/bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="/css/videojs/video-js.css">
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
@@ -41,16 +42,18 @@
                 <li class="{{ $segment == 'artist' || $segment == 'album' || $segment == 'song' ? 'active' : '' }}">{!! link_to_route('public_artists', 'Artist') !!}</li>
                 <li class="{{ $segment == 'video' ? 'active' : '' }}">{!! link_to_route('public_video', 'Video') !!}</li>
                 <li class="hidden-xs {{ $segment == 'about' ? 'active' : '' }}">{!! link_to_route('public_about', 'About') !!}</li>
+                @if(Auth::check())
                 <li id="fat-menu" class="dropdown">
-                    <a href="#" id="dropmenu" role="button" class="dropdown-toggle" data-toggle="dropdown"><img src="/img/avatar/avatar (3).jpg" class="top-avatar"></a>
+                    <a href="#" id="dropmenu" role="button" class="dropdown-toggle" data-toggle="dropdown"><img src="/img/avatar/{{ Auth::user()->avatar }}" class="top-avatar"></a>
                     <ul class="dropdown-menu" role="menu" aria-labelledby="dropmenu">
-                        <li role="presentation"><a role="menuitem" href="{{ route('private_profile') }}"><i class="glyphicon glyphicon-user"></i> Profile</a></li>
+                        <li role="presentation"><a role="menuitem" href="{{ route('private_profile', [str_slug(Auth::user()->name)]) }}"><i class="glyphicon glyphicon-user"></i> Profile</a></li>
                         <li role="presentation"><a role="menuitem" href="{{ route('private_playlist') }}"><i class="glyphicon glyphicon-play"></i> Playlist</a></li>
-                        <li role="presentation"><a role="menuitem" href="{{ route('private_favorite') }}"><i class="glyphicon glyphicon-heart"></i> Favorite</a></li>
+                        <li role="presentation"><a role="menuitem" href="{{ route('private_setting') }}"><i class="glyphicon glyphicon-wrench"></i> Setting</a></li>
                         <li role="presentation" class="divider"></li>
-                        <li role="presentation"><a role="menuitem" href="{{ route('public_sign_out') }}"><i class="glyphicon glyphicon-log-out"></i> Sign Out</a></li>
+                        <li role="presentation"><a role="menuitem" href="{{ route('private_sign_out') }}"><i class="glyphicon glyphicon-log-out"></i> Sign Out</a></li>
                     </ul>
                 </li>
+                @endif
             </ul>
             <h3 class="text-muted"><span class="glyphicon glyphicon-headphones"></span> <span class="hidden-xs">THE BEATS</span></h3>
         </header>
@@ -66,5 +69,10 @@
 
     <script src="/js/jquery/jquery.min.js"></script>
     <script src="/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/js/videojs/video.js"></script>
+    <!-- Unless using the CDN hosted version, update the URL to the Flash SWF -->
+    <script>
+        videojs.options.flash.swf = "/js/videojs/video-js.swf";
+    </script>
 </body>
 </html>

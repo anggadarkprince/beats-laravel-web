@@ -2,21 +2,14 @@
 
 namespace App\Http\Controllers\Management;
 
-use App\Http\Controllers\Controller;
-use App\User;
+use App\Video;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Controller;
 
-class UsersController extends Controller
+class VideosController extends Controller
 {
-
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -25,16 +18,6 @@ class UsersController extends Controller
     public function index()
     {
         //
-    }
-
-    public function profile($slug)
-    {
-
-    }
-
-    public function setting()
-    {
-
     }
 
     /**
@@ -61,20 +44,16 @@ class UsersController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $slug
+     * @param  int  $id
      * @return Response
      */
     public function show($slug)
     {
-        $user = new User();
+        $video = new Video();
 
-        $name = str_replace('-',' ', $slug);
+        $videoData = $video->where('slug', $slug)->firstOrFail();
 
-        $userData = $user->where('name', 'like', '%'.$name.'%')->firstOrFail();
-
-        $playlistData = $userData->playlist()->get();
-
-        return view('pages.user', compact('userData', 'playlistData'));
+        return view('pages.player', compact('videoData'));
     }
 
     /**

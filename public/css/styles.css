@@ -239,9 +239,14 @@ p.subtitle{
 .video{
     margin-bottom: 40px;
 }
-
+.video .title{
+    margin: 10px 0 5px;
+}
 .article{
     margin-bottom: 50px;
+}
+.playlist{
+    margin-bottom: 40px;
 }
 .post{
     padding-bottom: 15px;
