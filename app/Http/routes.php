@@ -82,11 +82,11 @@ $router->resource('feedback', 'Frontend\FeedbackController', [
 
 // Authenticate user allowed...
 Route::get('/playlist', ['as' => 'private_playlist', 'uses' => 'Management\PlaylistController@index']);
-Route::get('/setting', ['as' => 'private_setting', 'uses' => 'Management\UsersController@setting']);
+Route::get('/setting', ['as' => 'private_setting', 'uses' => 'Management\UserController@setting']);
 Route::get('/{slug}', [
     'as' => 'private_profile',
     'middleware' => 'auth',
-    'uses' => 'Management\UsersController@show'
+    'uses' => 'Management\UserController@show'
 ]);
 
 Route::bind('playlist', function($id){
@@ -101,5 +101,21 @@ $router->resource('playlist', 'Management\PlaylistController', [
         'store'     => 'playlist_store',
         'update'    => 'playlist_update',
         'destroy'   => 'playlist_destroy',
+    ]
+]);
+
+Route::bind('user', function($id){
+    return \App\User::find($id);
+});
+$router->resource('user', 'Management\UserController', [
+    'names' =>[
+        'index'     => 'user',
+        'show'      => 'user_show',
+        'create'    => 'user_create',
+        'edit'      => 'user_edit',
+        'store'     => 'user_store',
+        'update'    => 'user_update',
+        'destroy'   => 'user_destroy',
+        'setting'   => 'user_setting',
     ]
 ]);

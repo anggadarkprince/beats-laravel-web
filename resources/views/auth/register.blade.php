@@ -38,19 +38,6 @@
             {!! $errors->first('password_confirmation', '<span class="help-block">:message</span>') !!}
         </div>
 
-    <!--
-        <div class="form-group">
-            {!! Form::label('male', 'Gender') !!}
-            <p>
-                <label class="radio-inline">
-                    {!! Form::radio('gender', 'Male', true, ['id' => 'male', 'class' => 'required']) !!} Male
-                </label>
-                <label class="radio-inline">
-                    {!! Form::radio('gender', 'Female', false, ['id' => 'female']) !!} Female
-                </label>
-            </p>
-        </div>
-    -->
         <div class="form-group {{ $errors->has('agree') ? 'has-error' : '' }}">
             {!! Form::label('agree', 'Agreement') !!}
             <p>
