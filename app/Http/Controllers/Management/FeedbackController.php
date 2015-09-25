@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Management;
 
 use App\Feedback;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateFeedbackRequest;
 use Illuminate\Http\Request;
-
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Session;
 
@@ -14,6 +13,9 @@ class FeedbackController extends Controller
 {
     private $feedback;
 
+    /**
+     * @param Feedback $feedback
+     */
     public function __construct(Feedback $feedback)
     {
         $this->feedback = $feedback;

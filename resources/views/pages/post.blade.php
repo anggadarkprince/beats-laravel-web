@@ -16,7 +16,7 @@
             <p class="text-muted">{{ $author->name }} | Published at {{ date_format(date_create($article->created_at), 'd F Y - h:m A') }}</p>
         </header>
         <p>
-            {!! $article->content !!}}
+            {!! $article->content !!}
         </p>
         <section class="share">
             <h4>Share This Post</h4>

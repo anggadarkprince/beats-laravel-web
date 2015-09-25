@@ -5,7 +5,7 @@
 @section('content')
 
     <div class="artists">
-        <h2 class="table-title">Artist Data {!! link_to_route('admin::artists.create', 'NEW ARTIST', [], ['class' => 'btn btn-default pull-right']) !!}</h2>
+        <h2 class="table-title">Artists Data {!! link_to_route('admin::artists.create', 'NEW ARTIST', [], ['class' => 'btn btn-default pull-right']) !!}</h2>
 
         <table class="table table-responsive table-striped table">
             <thead>

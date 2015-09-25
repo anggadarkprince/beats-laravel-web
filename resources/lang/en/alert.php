@@ -26,4 +26,8 @@ return [
 
     'comment_sent' => 'Your comment has been sent, thanks.',
     'comment_deleted' => 'Comment has been deleted.',
+
+    'post_created' => 'Post has been created.',
+    'post_updated' => 'Post has been updated.',
+    'post_deleted' => 'Post has been deleted.',
 ];

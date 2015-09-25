@@ -15,6 +15,7 @@ class Post extends Model
 {
     protected $table = 'posts';
     protected $primaryKey = 'id';
+    protected $fillable = ['artist', 'author', 'title', 'content', 'slug'];
 
     public function comments()
     {

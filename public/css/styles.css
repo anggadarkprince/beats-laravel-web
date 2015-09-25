@@ -206,14 +206,13 @@ input[type="text"],
 input[type="email"],
 textarea.form-control{
     margin-bottom: -1px;
-    border-radius: 0;
 }
 input[type="password"] {
     margin-bottom: 10px;
-    border-radius: 0;
 }
 .form-control{
     box-shadow: none;
+    border-radius: 0;
 }
 .form-signin .btn{
     margin-top: 30px;

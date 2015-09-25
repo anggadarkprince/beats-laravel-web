@@ -21,7 +21,7 @@
                 <th>Email</th>
                 <th class="text-center">Sent At</th>
                 <th class="text-center">Detail</th>
-                <th class="text-center" width="200">Action</th>
+                <th class="text-center" width="100">Action</th>
             </tr>
             </thead>
             <tbody>
@@ -32,7 +32,7 @@
                     <td class="text-center">{{ $no++ }}</td>
                     <td>{{ $message->name }}</td>
                     <td>{{ $message->email }}</td>
-                    <td class="text-center">{{ date_format(date_create($message->created_at), 'd F Y') }}</td>
+                    <td class="text-center">{{ date_format(date_create($message->created_at), 'd-M-Y | h:m A') }}</td>
                     <td class="text-center">{!! link_to_route('admin::feedback.show', 'Detail', [$message->id]) !!}</td>
                     <td class="text-center">{!! link_to('#deleteModal', 'DELETE',['class' => 'btn btn-danger btn-sm btn-delete', 'data-toggle' => 'modal', 'data-id' => $message->id]) !!}</td>
                 </tr>

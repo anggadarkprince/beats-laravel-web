@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Management;
 
 use App\Comment;
+use App\Http\Controllers\Controller;
+use App\Http\Requests;
 use App\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Session;
 
@@ -15,11 +15,13 @@ class CommentController extends Controller
 {
     private $comment;
 
+    /**
+     * @param Comment $comment
+     */
     public function __construct(Comment $comment)
     {
         $this->comment = $comment;
     }
-
 
     /**
      * Display a listing of the resource.
