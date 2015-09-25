@@ -8,7 +8,7 @@
         <h2 class="table-title">Feedback Data</h2>
 
         @if(Session::has('status'))
-            <div class="alert alert-success">
+            <div class="alert alert-warning">
                 {!! '<p>'.Session::get('status').'</p>' !!}
             </div>
         @endif
@@ -34,9 +34,7 @@
                     <td>{{ $message->email }}</td>
                     <td class="text-center">{{ date_format(date_create($message->created_at), 'd F Y') }}</td>
                     <td class="text-center">{!! link_to_route('admin::feedback.show', 'Detail', [$message->id]) !!}</td>
-                    <td class="text-center">
-                        {!! delete_form(['admin::feedback.destroy', $message->slug], 'DELETE', 'btn-sm') !!}
-                    </td>
+                    <td class="text-center">{!! link_to('#deleteModal', 'DELETE',['class' => 'btn btn-danger btn-sm btn-delete', 'data-toggle' => 'modal', 'data-id' => $message->id]) !!}</td>
                 </tr>
             @empty
                 <tr>
@@ -50,6 +48,9 @@
             {!! $feedback->render() !!}
         </div>
     </div>
+
+    <?php $routeDelete = 'admin::feedback.destroy' ?>
+    @include('elements/_delete')
 
 @stop
 

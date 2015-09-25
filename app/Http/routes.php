@@ -80,7 +80,7 @@ get('/artist/{name}', ['as' => 'public_artist', 'uses' => 'Frontend\PagesControl
 get('/album/{name}/{album}', ['as' => 'public_album', 'uses' => 'Frontend\PagesController@album']);
 get('/song/{name}/{album}/{song}', ['as' => 'public_song', 'uses' => 'Frontend\PagesController@song']);
 get('/video', ['as' => 'public_video', 'uses' => 'Frontend\PagesController@video']);
-get('/video/{slug}', ['as' => 'public_show_video', 'uses' => 'Management\VideosController@show']);
+get('/video/{slug}', ['as' => 'public_show_video', 'uses' => 'Management\VideoController@show']);
 get('/about', ['as' => 'public_about', 'uses' => 'Frontend\PagesController@about']);
 get('/post/{slug}', ['as' => 'public_post', 'uses' => 'Management\PostController@show']);
 post('/comment/{slug}', ['as' => 'comment_store', 'uses' => 'Management\CommentController@store']);
@@ -108,8 +108,8 @@ $router->resource('playlist', 'Management\PlaylistController', [
         'destroy'   => 'playlist_destroy',
     ]
 ]);
-post('song/playlist', ['as' => 'song_playlist_save', 'uses' => 'Management\SongsController@saveToPlaylist']);
-delete('song/playlist/{slug}', ['as' => 'song_playlist_delete', 'uses' => 'Management\SongsController@deleteFromPlaylist']);
+post('song/playlist', ['as' => 'song_playlist_save', 'uses' => 'Management\SongController@saveToPlaylist']);
+delete('song/playlist/{slug}', ['as' => 'song_playlist_delete', 'uses' => 'Management\SongController@deleteFromPlaylist']);
 
 // User setting..
 Route::bind('user', function($id){
