@@ -42,7 +42,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="5" class="text-center">No artist available, {!! link_to_route('admin::albums.create', 'Create New Album') !!}</td>
+                    <td colspan="5" class="text-center">No album available, {!! link_to_route('admin::albums.create', 'Create New Album') !!}</td>
                 </tr>
             @endforelse
             </tbody>

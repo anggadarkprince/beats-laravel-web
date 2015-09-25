@@ -1,11 +1,25 @@
 @extends('master')
 
+@section('page', 'Create New Song')
+
 @section('content')
-    <h2>Add new song</h2>
 
-    {!! Form::open(['route' => 'song_store_path']) !!}
+    <div class="artists">
+        <h2 class="table-title">New Song</h2>
 
-    @include('songs._form')
+        {!! Form::open(['route' => 'admin::songs.store', 'class' => 'form-horizontal']) !!}
 
-    {!! Form::close() !!}
+        @include('songs._form')
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="button" class="btn btn-default" onclick="window.history.back()">Back to Songs List</button>
+                {!! Form::submit('Create Song', ['class' => 'btn btn-info']) !!}
+            </div>
+        </div>
+
+        {!! Form::close() !!}
+    </div>
+
 @stop
+

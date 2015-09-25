@@ -1,14 +1,31 @@
 @extends('master')
 
+@section('page', 'Edit Song')
+
 @section('content')
-    <h2>{{ $song->title }}</h2>
 
-    {!! Form::model($song, ['route' => ['song_update_path', $song->slug], 'method' => 'PATCH']) !!}
+    <div class="artists">
+        <h2 class="table-title">Edit Song</h2>
 
-    @include('songs._form')
+        @if(Session::has('status'))
+            <div class="alert alert-danger">
+                {!! '<p>'.Session::get('status').'</p>' !!}
+            </div>
+        @endif
 
-    {!! Form::close() !!}
+        {!! Form::model($song, ['route' => ['admin::songs.update', $song->slug], 'method' => 'PATCH', 'class' => 'form-horizontal']) !!}
 
-    {!! delete_form(['song_destroy_path', $song->slug]) !!}
+        @include('songs._form')
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="button" class="btn btn-default" onclick="window.history.back()">Back to Song List</button>
+                {!! Form::submit('Update Song', ['class' => 'btn btn-info']) !!}
+            </div>
+        </div>
+
+        {!! Form::close() !!}
+    </div>
 
 @stop
+

@@ -15,6 +15,7 @@ class Song extends Model
 {
     protected $table = 'songs';
     protected $primaryKey = 'id';
+    protected $fillable = ['album', 'title', 'lyrics', 'music', 'writer', 'duration', 'is_hit', 'slug'];
 
     public function getHitsSong()
     {

@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Support\Facades\Auth;
+
 class CreateSongRequest extends Request
 {
     /**
@@ -11,7 +13,7 @@ class CreateSongRequest extends Request
      */
     public function authorize()
     {
-        return true;
+        return Auth::check();
     }
 
     /**
@@ -22,8 +24,12 @@ class CreateSongRequest extends Request
     public function rules()
     {
         return [
-            'title' => 'required',
-            'slug' => 'required|unique:songs,slug'
+            'title' => 'required|max:50',
+            'lyrics' => 'required',
+            'writer' => 'required|max:100',
+            'music' => 'required|max:100',
+            'duration' => 'required|date_format:h:m',
+            'slug' => 'required|alpha_dash|max:255|unique:songs,slug'
         ];
     }
 }

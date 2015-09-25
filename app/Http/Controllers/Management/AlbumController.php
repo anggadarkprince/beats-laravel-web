@@ -114,7 +114,7 @@ class AlbumController extends Controller
             'description' => 'required|max:250',
             'label' => 'required|max:50',
             'released' => 'required|date',
-            'slug' => 'required|alpha_dash|max:255|unique:posts,slug,'.$album->id
+            'slug' => 'required|alpha_dash|max:255|unique:albums,slug,'.$album->id
         ]);
 
         if ($validator->fails()) {
