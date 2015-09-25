@@ -40,14 +40,28 @@ $router->resource('people', 'PeopleController',[
 
 */
 
-get('music', ['as' => 'songs_path', 'uses' => 'Management\SongsController@index']);
-get('music/create', ['as' => 'song_create_path', 'uses' => 'Management\SongsController@create']);
-get('music/{song}', ['as' => 'song_path', 'uses' => 'Management\SongsController@show']);
-get('music/{slug}/edit', ['as' => 'song_edit_path', 'uses' => 'Management\SongsController@edit']);
-patch('music/{slug}', ['as' => 'song_update_path', 'uses' => 'Management\SongsController@update']);
-post('music', ['as' => 'song_store_path', 'uses' => 'Management\SongsController@store']);
-delete('music/{slug}', ['as' => 'song_destroy_path', 'uses' => 'Management\SongsController@destroy']);
-
+// Admin routes...
+Route::group(['as' => 'admin::', 'middleware' => 'auth'], function () {
+    Route::get('dashboard', ['as' => 'dashboard', function () {
+        $page = 'Dashboard';
+        return view('pages.dashboard',compact('page'));
+    }]);
+    Route::resource('artists', 'Management\ArtistController');
+    Route::resource('albums', 'Management\AlbumController');
+    Route::resource('songs', 'Management\SongController');
+    Route::resource('videos', 'Management\VideoController');
+    Route::resource('posts', 'Management\PostController');
+    Route::resource('comments', 'Management\CommentController', [
+        'only' => [
+            'index', 'show', 'store', 'destroy'
+        ]
+    ]);
+    Route::resource('feedback', 'Management\FeedbackController', [
+        'only' => [
+            'index', 'show', 'store', 'destroy'
+        ]
+    ]);
+});
 
 // Authentication routes...
 Route::get('auth/login', ['as' => 'public_sign_in', 'uses' => 'Auth\AuthController@getLogin']);
@@ -68,19 +82,7 @@ get('/song/{name}/{album}/{song}', ['as' => 'public_song', 'uses' => 'Frontend\P
 get('/video', ['as' => 'public_video', 'uses' => 'Frontend\PagesController@video']);
 get('/video/{slug}', ['as' => 'public_show_video', 'uses' => 'Management\VideosController@show']);
 get('/about', ['as' => 'public_about', 'uses' => 'Frontend\PagesController@about']);
-get('/post/{slug}', ['as' => 'public_post', 'uses' => 'Frontend\PostController@show']);
-
-$router->resource('feedback', 'Frontend\FeedbackController', [
-    'names' =>[
-        'index'     => 'feedback',
-        'show'      => 'feedback_show',
-        'store'     => 'feedback_store'
-    ],
-    'only' => [
-        'index', 'show', 'store'
-    ]
-]);
-
+get('/post/{slug}', ['as' => 'public_post', 'uses' => 'Management\PostController@show']);
 post('/comment/{slug}', ['as' => 'comment_store', 'uses' => 'Management\CommentController@store']);
 
 // Authenticate user allowed...
@@ -88,10 +90,10 @@ Route::get('/playlist', ['as' => 'private_playlist', 'uses' => 'Management\Playl
 Route::get('/setting', ['as' => 'private_setting', 'uses' => 'Management\UserController@setting']);
 Route::get('/{slug}', [
     'as' => 'private_profile',
-    //'middleware' => 'auth',
     'uses' => 'Management\UserController@show'
 ]);
 
+// User playlist...
 Route::bind('playlist', function($id){
     return \App\Playlist::find($id);
 });
@@ -109,7 +111,7 @@ $router->resource('playlist', 'Management\PlaylistController', [
 post('song/playlist', ['as' => 'song_playlist_save', 'uses' => 'Management\SongsController@saveToPlaylist']);
 delete('song/playlist/{slug}', ['as' => 'song_playlist_delete', 'uses' => 'Management\SongsController@deleteFromPlaylist']);
 
-
+// User setting..
 Route::bind('user', function($id){
     return \App\User::find($id);
 });
@@ -125,3 +127,5 @@ $router->resource('user', 'Management\UserController', [
         'setting'   => 'user_setting',
     ]
 ]);
+
+

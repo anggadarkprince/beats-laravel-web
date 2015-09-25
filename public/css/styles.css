@@ -4,6 +4,9 @@ body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #777;
 }
+body#admin{
+    padding: 0;
+}
 a{
     color: #5bc0de;
 }
@@ -21,6 +24,9 @@ a:hover, a:focus{
 .modal-header,
 .modal-footer{
     padding: 25px;
+}
+.alert{
+    padding: 10px 15px;
 }
 .list-group .list-group-item{
     border-radius: 0;
@@ -100,7 +106,18 @@ a:hover, a:focus{
     -moz-border-radius: 0;
     border-radius: 0;
 }
-
+.table-title{
+    margin-bottom: 25px;
+}
+.table thead > tr{
+    background-color: #ddd;
+}
+.table thead > tr > th{
+    padding: 12px 8px;
+}
+.table > tbody > tr > td{
+    vertical-align: middle;
+}
 /* Custom page footer */
 .footer {
     padding-top: 19px;
@@ -112,6 +129,9 @@ a:hover, a:focus{
 @media (min-width: 768px) {
     .container {
         max-width: 760px;
+    }
+    body#admin .container{
+        max-width: 980px;
     }
 }
 

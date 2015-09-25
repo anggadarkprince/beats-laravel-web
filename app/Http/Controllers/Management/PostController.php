@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Management;
 
+use App\Post;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-class ArtistController extends Controller
+class PostController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -43,12 +44,20 @@ class ArtistController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int  $slug
      * @return Response
      */
-    public function show($id)
+    public function show($slug = null)
     {
-        //
+        $post = new Post();
+
+        $article = $post->whereSlug($slug)->firstOrFail();
+
+        $author = $article->author()->firstOrFail();
+
+        $comments = $article->comments()->get();
+
+        return view('pages.post', compact('article', 'author', 'comments'));
     }
 
     /**

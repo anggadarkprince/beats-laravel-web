@@ -25,4 +25,5 @@ return [
     'setting_updated' => 'Setting has been updated',
 
     'comment_sent' => 'Your comment has been sent, thanks.',
+    'comment_deleted' => 'Comment has been deleted.',
 ];

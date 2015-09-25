@@ -2,21 +2,29 @@
 
 namespace App\Http\Controllers\Management;
 
+use App\Album;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-class AlbumsController extends Controller
+class AlbumController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
+     * @param Album $album
      * @return Response
      */
-    public function index()
+    public function index(Album $album)
     {
-        //
+        $page = 'Album';
+
+        $albums = $album->select("*","artists.slug as slugArtist","albums.slug as slugAlbum")
+            ->join('artists', 'albums.artist', '=', 'artists.id')
+            ->paginate(10);
+
+        return view('albums.index', compact('page', 'albums'));
     }
 
     /**

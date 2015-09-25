@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Session;
 
 class CommentController extends Controller
 {
@@ -17,7 +18,6 @@ class CommentController extends Controller
     public function __construct(Comment $comment)
     {
         $this->comment = $comment;
-        $this->middleware('auth', ['only' => 'store']);
     }
 
 
@@ -28,17 +28,15 @@ class CommentController extends Controller
      */
     public function index()
     {
+        $page = 'Comments';
 
-    }
+        $comments = $this->comment
+            ->select('*', 'comments.id as id', 'comments.created_at as created_at')
+            ->join('users', 'comments.user', '=', 'users.id')
+            ->orderBy('comments.created_at', 'desc')
+            ->paginate(10);
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        //
+        return view('comments.index', compact('page', 'comments'));
     }
 
     /**
@@ -72,18 +70,13 @@ class CommentController extends Controller
      */
     public function show($id)
     {
-        //
-    }
+        $comment = $this->comment
+            ->select('*', 'comments.id as id','comments.created_at as created_at')
+            ->join('users', 'comments.user', '=', 'users.id')
+            ->where('comments.id', $id)
+            ->first();
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function edit($id)
-    {
-        //
+        return view('comments.show', compact('comment'));
     }
 
     /**
@@ -106,6 +99,12 @@ class CommentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $comment = $this->comment->find($id);
+
+        $comment->delete();
+
+        Session::flash('status', Lang::get('alert.comment_deleted'));
+
+        return redirect()->route('admin::comments.index');
     }
 }

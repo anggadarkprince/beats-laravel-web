@@ -12,7 +12,7 @@
         </div>
     @endif
 
-    {!! Form::open(['route' => 'feedback_store']) !!}
+    {!! Form::open(['route' => 'admin::feedback.store']) !!}
 
     <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
         {!! Form::label('name', 'Name') !!}

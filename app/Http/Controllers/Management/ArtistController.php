@@ -1,23 +1,28 @@
 <?php
 
-namespace App\Http\Controllers\Frontend;
+namespace App\Http\Controllers\Management;
 
-use App\Post;
+use App\Artist;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-class PostController extends Controller
+class ArtistController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
+     * @param Artist $artist
      * @return Response
      */
-    public function index()
+    public function index(Artist $artist)
     {
-        //
+        $page = 'Artist';
+
+        $artists = $artist->paginate(10);
+
+        return view('artists.index', compact('page', 'artists'));
     }
 
     /**
@@ -44,20 +49,12 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $slug
+     * @param  int  $id
      * @return Response
      */
-    public function show($slug = null)
+    public function show($id)
     {
-        $post = new Post();
-
-        $article = $post->whereSlug($slug)->firstOrFail();
-
-        $author = $article->author()->firstOrFail();
-
-        $comments = $article->comments()->get();
-
-        return view('pages.post', compact('article', 'author', 'comments'));
+        //
     }
 
     /**

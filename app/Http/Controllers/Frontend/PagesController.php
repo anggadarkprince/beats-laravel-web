@@ -4,11 +4,9 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Album;
 use App\Artist;
-use App\Playlist;
-use App\Song;
-
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Http\Requests;
+use App\Song;
 use App\User;
 use App\Video;
 use Illuminate\Support\Facades\Auth;

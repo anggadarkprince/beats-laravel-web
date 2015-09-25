@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
  * Class SongsController
  * @package App\Http\Controllers
  */
-class SongsController extends Controller
+class SongController extends Controller
 {
     private $song;
 
