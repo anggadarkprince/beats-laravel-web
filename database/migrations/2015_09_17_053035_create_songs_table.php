@@ -27,7 +27,7 @@ class CreateSongsTable extends Migration
             $table->increments('id');
             $table->integer('artist')->unsigned();
             $table->string('title', 50);
-            $table->string('cover', 50);
+            $table->string('cover');
             $table->string('description', 250);
             $table->string('label', 50);
             $table->date('released');
@@ -49,7 +49,7 @@ class CreateSongsTable extends Migration
             $table->string('slug')->unique();
             $table->timestamps();
 
-            $table->foreign('album')->references('id')->on('albums');
+            $table->foreign('album')->references('id')->on('albums')->onDelete('cascade');
         });
     }
 

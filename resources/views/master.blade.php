@@ -8,7 +8,7 @@
     <meta property="og:description"   content="Music Discovery Website" />
     <meta property="og:image"         content="/img/avatar/avatar (1).jpg" />
 
-    <title>BEATS ADMINISTRATOR - @yield('page')</title>
+    <title>BEATS Administrator - @yield('page')</title>
     <link rel="stylesheet" href="/css/bootstrap/bootstrap.css">
     <link rel="stylesheet" href="/css/videojs/video-js.css">
     <link rel="stylesheet" href="/css/styles.css">

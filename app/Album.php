@@ -15,6 +15,7 @@ class Album extends Model
 {
     protected $table = 'albums';
     protected $primaryKey = 'id';
+    protected $fillable = ['artist', 'title', 'cover', 'description', 'label', 'released', 'slug'];
 
     public function artist()
     {

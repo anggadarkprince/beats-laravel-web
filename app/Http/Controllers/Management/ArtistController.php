@@ -75,17 +75,6 @@ class ArtistController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param $slug
@@ -109,14 +98,14 @@ class ArtistController extends Controller
      */
     public function update(Request $request, $slug)
     {
-        $post = $this->artist->where('slug', $slug)->firstOrFail();
+        $artist = $this->artist->where('slug', $slug)->firstOrFail();
 
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'about' => 'required|max:255',
             'birthday' => 'required',
             'birthplace' => 'required|max:100',
-            'slug' => 'required|alpha_dash|max:255|unique:posts,slug,'.$post->id
+            'slug' => 'required|alpha_dash|max:255|unique:posts,slug,'.$artist->id
         ]);
 
         if ($validator->fails()) {
@@ -137,7 +126,7 @@ class ArtistController extends Controller
             }
         }
 
-        $post->fill($request->all())->save();
+        $artist->fill($request->all())->save();
 
         Session::flash('status', Lang::get('alert.artist_updated'));
 

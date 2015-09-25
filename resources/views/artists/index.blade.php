@@ -20,7 +20,6 @@
                 <th>Artist</th>
                 <th>Birthplace</th>
                 <th class="text-center">Birthday</th>
-                <th class="text-center">Detail</th>
                 <th class="text-center" width="200">Action</th>
             </tr>
             </thead>
@@ -36,7 +35,6 @@
                     </td>
                     <td>{{ $artist->birthplace }}</td>
                     <td class="text-center">{{ $artist->birthday }}</td>
-                    <td class="text-center">{!! link_to_route('public_artist', 'Detail', [$artist->slug], ['target' => '_blank']) !!}</td>
                     <td class="text-center">
                         {!! link_to_route('admin::artists.edit', 'EDIT', [$artist->slug], ['class' => 'btn btn-sm btn-info']) !!}
                         {!! link_to('#deleteModal', 'DELETE',['class' => 'btn btn-danger btn-sm btn-delete', 'data-toggle' => 'modal', 'data-id' => $artist->slug]) !!}

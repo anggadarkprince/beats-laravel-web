@@ -6,7 +6,7 @@
     </div>
 </div>
 <div class="form-group {{ $errors->has('about') ? 'has-error' : '' }}">
-    {!! Form::label('about', 'Content', ['class' => 'col-sm-2 control-label']) !!}
+    {!! Form::label('about', 'About', ['class' => 'col-sm-2 control-label']) !!}
     <div class="col-sm-10">
         {!! Form::textarea('about', null, ['class'=>'form-control', 'placeholder' => 'Put artist about', 'rows' => '5', 'required' => true]) !!}
         {!! $errors->first('about', '<span class="help-block">:message</span>') !!}
