@@ -48,6 +48,7 @@ patch('music/{slug}', ['as' => 'song_update_path', 'uses' => 'Management\SongsCo
 post('music', ['as' => 'song_store_path', 'uses' => 'Management\SongsController@store']);
 delete('music/{slug}', ['as' => 'song_destroy_path', 'uses' => 'Management\SongsController@destroy']);
 
+
 // Authentication routes...
 Route::get('auth/login', ['as' => 'public_sign_in', 'uses' => 'Auth\AuthController@getLogin']);
 Route::post('auth/login', ['as' => 'post_sign_in', 'uses' => 'Auth\AuthController@postLogin']);
@@ -105,6 +106,9 @@ $router->resource('playlist', 'Management\PlaylistController', [
         'destroy'   => 'playlist_destroy',
     ]
 ]);
+post('song/playlist', ['as' => 'song_playlist_save', 'uses' => 'Management\SongsController@saveToPlaylist']);
+delete('song/playlist/{slug}', ['as' => 'song_playlist_delete', 'uses' => 'Management\SongsController@deleteFromPlaylist']);
+
 
 Route::bind('user', function($id){
     return \App\User::find($id);

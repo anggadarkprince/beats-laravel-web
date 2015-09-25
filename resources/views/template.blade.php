@@ -73,6 +73,90 @@
     <!-- Unless using the CDN hosted version, update the URL to the Flash SWF -->
     <script>
         videojs.options.flash.swf = "/js/videojs/video-js.swf";
+
+        $(document).ready(function(){
+            if($('.playlist-item').length){
+                var playlist = "@if(isset($savedPlaylist)){{$savedPlaylist->id}}@endif";
+                var list = $('.playlist-item');
+                var playlistSelectedId;
+                list.click(function(){
+                    $(this).siblings().removeClass('active');
+                    $(this).addClass('active');
+                    playlistSelectedId = $(this).data('id');
+                });
+
+                $(document).on("click",".save-playlist",function(e){
+                    if($('.playlist-list').find('.active').length){
+                        saveToPlaylist();
+                    }
+                    else{
+                        alert('Select a playlist first');
+                    }
+                });
+
+                $(document).on('click', '.delete-playlist', function(){
+                    deleteToPlaylist();
+                });
+
+                function saveToPlaylist(){
+                    $(this).addClass('disabled');
+                    $.ajax({
+                        url: "{{ route('song_playlist_save') }}",
+                        type: 'POST',
+                        data: {playlist:playlistSelectedId, song:"{{ Request::segment(4) }}", _token:"{{ csrf_token()}}"},
+                        success: function(data){
+                            if(data){
+                                $("#playlistModal").modal('hide');
+                                $(".btnSaveToPlaylist")
+                                        .text("SONG SAVED")
+                                        .attr('href', '#playlistDeleteModal')
+                                        .addClass('btnRemoveFromPlaylist')
+                                        .addClass('btn-info')
+                                        .removeClass('btnSaveToPlaylist')
+                                        .removeClass('btn-default');
+                                var badge = $('.playlist-list .active').find('.badge');
+                                badge.text(parseInt(badge.text()) + 1);
+                                playlist = playlistSelectedId;
+                                $(this).removeClass('disabled');
+                            }
+                        },
+                        error: function(e){
+                            alert('Something is getting wrong '+ e.responseText);
+                        }
+                    });
+                }
+
+                function deleteToPlaylist(){
+                    $(this).addClass('disabled');
+                    $.ajax({
+                        url: "{{ route('song_playlist_delete') }}",
+                        type: 'POST',
+                        data: {playlist:playlist, song:"{{ Request::segment(4) }}", _method: "delete", _token:"{{ csrf_token()}}"},
+                        success: function(data){
+                            if(data == "true"){
+                                $("#playlistDeleteModal").modal('hide');
+                                $(".btnRemoveFromPlaylist")
+                                        .text("SAVE TO PLAYLIST")
+                                        .attr('href', '#playlistModal')
+                                        .removeClass('btnRemoveFromPlaylist')
+                                        .removeClass('btn-info')
+                                        .addClass('btnSaveToPlaylist')
+                                        .addClass('btn-default');
+                                $(this).removeClass('disabled');
+                                var badge = $(".playlist-item[data-id='"+playlist+"']").find('.badge');
+                                badge.text(parseInt(badge.text()) - 1);
+                            }
+                        },
+                        error: function(e){
+                            alert('Something is getting wrong '+ e.responseText);
+                            $('.footer').html(e.responseText);
+                        }
+                    });
+                }
+            }
+
+
+        });
     </script>
 </body>
 </html>

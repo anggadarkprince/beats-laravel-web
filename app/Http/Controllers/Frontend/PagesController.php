@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Album;
 use App\Artist;
+use App\Playlist;
 use App\Song;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\User;
 use App\Video;
+use Illuminate\Support\Facades\Auth;
 
 class PagesController extends Controller
 {
@@ -121,7 +124,17 @@ class PagesController extends Controller
 
         $songData = $this->_songBySlug($songSlug);
 
-        return view('pages.song', compact('artistData', 'albumData', 'songData'));
+        if(Auth::check()){
+            $user = new User();
+
+            $userData = $user->find(Auth::user()->id);
+
+            $playlistData = $userData->playlist()->get();
+
+            $savedPlaylist = $this->_isSongSaved($songData->id, Auth::user()->id);
+        }
+
+        return view('pages.song', compact('artistData', 'albumData', 'songData', 'playlistData', 'savedPlaylist'));
     }
 
     /**
@@ -195,6 +208,29 @@ class PagesController extends Controller
         $songData = $this->song->whereSlug($songSlug)->firstOrFail();
 
         return $songData;
+    }
+
+    private function _isSongSaved($songId, $userId)
+    {
+        $user = new User();
+
+        $userData = $user->find($userId);
+
+        $userPlaylist = $userData->playlist()->get();
+
+        foreach($userPlaylist as $playlist){
+            $playlistData = $playlist->find($playlist->id);
+
+            $songs = $playlistData->songs()->get();
+
+            foreach($songs as $song){
+                if($song->id == $songId){
+                    return $playlist;
+                }
+            }
+        }
+
+        return null;
     }
 
 }

@@ -15,6 +15,7 @@ class PlaylistSong extends Model
 {
     protected $table = 'playlist_songs';
     protected $primaryKey = 'id';
+    protected $fillable = ['playlist', 'song'];
 
     public function song()
     {

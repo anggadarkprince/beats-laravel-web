@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Management;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateSongRequest;
+use App\PlaylistSong;
 use App\Song;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class SongsController
@@ -75,6 +77,35 @@ class SongsController extends Controller
         $song->delete();
 
         return redirect('music');
+    }
+
+    public function saveToPlaylist(Request $request)
+    {
+        $playlistSong = new PlaylistSong();
+        if(Auth::check()){
+            $song = $this->song->whereSlug($request->input('song'))->firstOrFail()->id;
+            $request->merge(['song' => $song]);
+            return $playlistSong->create($request->all());
+        }
+        return 'false';
+    }
+
+    public function deleteFromPlaylist(Request $request)
+    {
+        $playlistSong = new PlaylistSong();
+
+        if(Auth::check()) {
+            $song = $this->song->whereSlug($request->input('song'))->firstOrFail()->id;
+
+            $request->merge(['song' => $song]);
+
+            $list = $playlistSong->where('song', $request->input('song'))->where('playlist', $request->input('playlist'))->first();
+
+            $list->delete();
+
+            return 'true';
+        }
+        return 'false';
     }
 
 }

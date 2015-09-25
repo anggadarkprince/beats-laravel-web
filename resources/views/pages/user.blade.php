@@ -14,11 +14,11 @@
             <div class="media song-list">
                 <div class="media-body">
                     <div class="pull-left">
-                        <h4 class="title">{!! link_to_route('public_song', $playlist->list, [$playlist->id]) !!}</h4>
+                        <h4 class="title">{!! link_to_route('playlist_show', $playlist->list, [$playlist->id]) !!}</h4>
                         <p class="artist">{{ str_limit($playlist->description, 45) }}</p>
                     </div>
                     <div class="pull-right text-right">
-                        <p class="album">Created at {{ $playlist->released }}</p>
+                        <p class="album">Created at {{ $playlist->created_at }}</p>
                         <time class="duration text-muted">{{ $playlist->song_total }} Tracks</time>
                     </div>
                 </div>
