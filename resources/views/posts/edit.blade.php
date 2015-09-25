@@ -1,6 +1,6 @@
 @extends('master')
 
-@section('page', 'Create New Post')
+@section('page', 'Edit New Post')
 
 @section('content')
 

@@ -7,6 +7,12 @@
     <div class="artists">
         <h2 class="table-title">Artists Data {!! link_to_route('admin::artists.create', 'NEW ARTIST', [], ['class' => 'btn btn-default pull-right']) !!}</h2>
 
+        @if(Session::has('status'))
+            <div class="alert alert-warning">
+                {!! '<p>'.Session::get('status').'</p>' !!}
+            </div>
+        @endif
+
         <table class="table table-responsive table-striped table">
             <thead>
             <tr>
@@ -30,10 +36,10 @@
                     </td>
                     <td>{{ $artist->birthplace }}</td>
                     <td class="text-center">{{ $artist->birthday }}</td>
-                    <td class="text-center">{!! link_to_route('admin::artists.show', 'Detail', [$artist->slug]) !!}</td>
+                    <td class="text-center">{!! link_to_route('public_artist', 'Detail', [$artist->slug], ['target' => '_blank']) !!}</td>
                     <td class="text-center">
                         {!! link_to_route('admin::artists.edit', 'EDIT', [$artist->slug], ['class' => 'btn btn-sm btn-info']) !!}
-                        {!! delete_form(['admin::artists.destroy', $artist->slug], 'DELETE', 'btn-sm') !!}
+                        {!! link_to('#deleteModal', 'DELETE',['class' => 'btn btn-danger btn-sm btn-delete', 'data-toggle' => 'modal', 'data-id' => $artist->slug]) !!}
                     </td>
                 </tr>
             @empty
@@ -48,6 +54,9 @@
             {!! $artists->render() !!}
         </div>
     </div>
+
+    <?php $routeDelete = 'admin::artists.destroy' ?>
+    @include('elements/_delete')
 
 @stop
 

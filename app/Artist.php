@@ -15,6 +15,7 @@ class Artist extends Model
 {
     protected $table = 'artists';
     protected $primaryKey = 'id';
+    protected $fillable = ['name', 'avatar', 'about', 'birthday', 'birthplace', 'slug'];
 
     public function getArtistWithAlbum()
     {

@@ -130,8 +130,7 @@ class PostController extends Controller
         ]);
 
         if ($validator->fails()) {
-            $request->session()->flash('status', 'danger');
-            $request->session()->flash('message', Lang::get('alert.unvalidated'));
+            Session::flash('status', Lang::get('alert.unvalidated'));
 
             $this->throwValidationException(
                 $request, $validator

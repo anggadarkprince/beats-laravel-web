@@ -30,4 +30,16 @@ return [
     'post_created' => 'Post has been created.',
     'post_updated' => 'Post has been updated.',
     'post_deleted' => 'Post has been deleted.',
+
+    'artist_created' => 'Artist has been created.',
+    'artist_updated' => 'Artist has been updated.',
+    'artist_deleted' => 'Artist has been deleted.',
+
+    'album_created' => 'Album has been created.',
+    'album_updated' => 'Album has been updated.',
+    'album_deleted' => 'Album has been deleted.',
+
+    'song_created' => 'Song has been created.',
+    'song_updated' => 'Song has been updated.',
+    'song_deleted' => 'Song has been deleted.',
 ];
