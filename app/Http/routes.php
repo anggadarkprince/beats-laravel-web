@@ -11,46 +11,27 @@
 |
 */
 
-/*
-Route::bind('songs', function($slug){
-    return \App\Song::whereSlug($slug)->first();
-});
-
-$router->resource('songs', 'SongsController', [
-    'only' => [
-        'index', 'show', 'edit', 'update'
-    ]
-]);
-
-get('music', ['as' => 'songs_path', 'uses' => 'SongsController@index']);
-get('music/create', ['as' => 'song_create_path', 'uses' => 'SongsController@create']);
-get('music/{song}', ['as' => 'song_path', 'uses' => 'SongsController@show']);
-get('music/{slug}/edit', ['as' => 'song_edit_path', 'uses' => 'SongsController@edit']);
-patch('music/{slug}', ['as' => 'song_update_path', 'uses' => 'SongsController@update']);
-post('music', ['as' => 'song_store_path', 'uses' => 'SongsController@store']);
-delete('music/{slug}', ['as' => 'song_destroy_path', 'uses' => 'SongsController@destroy']);
-
-$router->resource('people', 'PeopleController',[
-    'names' =>[
-        'index' => 'employee',
-        'show' => 'person'
-    ],
-    'only' =>['index', 'show', 'destroy']
-]);
-
-*/
-
 // Admin routes...
 Route::group(['as' => 'admin::', 'middleware' => 'App\Http\Middleware\AdminMiddleware'], function () {
     Route::get('dashboard', ['as' => 'dashboard', function () {
         $page = 'Dashboard';
         return view('pages.dashboard',compact('page'));
     }]);
-    Route::resource('artists', 'Management\ArtistController');
-    Route::resource('albums', 'Management\AlbumController');
-    Route::resource('songs', 'Management\SongController');
-    Route::resource('videos', 'Management\VideoController');
-    Route::resource('posts', 'Management\PostController');
+    Route::resource('artists', 'Management\ArtistController', [
+        'except' => ['show']
+    ]);
+    Route::resource('albums', 'Management\AlbumController', [
+        'except' => ['show']
+    ]);
+    Route::resource('songs', 'Management\SongController', [
+        'except' => ['show']
+    ]);
+    Route::resource('videos', 'Management\VideoController', [
+        'except' => ['show']
+    ]);
+    Route::resource('posts', 'Management\PostController',[
+        'except' => ['show']
+    ]);
     Route::resource('comments', 'Management\CommentController', [
         'only' => [
             'index', 'show', 'store', 'destroy'
@@ -59,6 +40,11 @@ Route::group(['as' => 'admin::', 'middleware' => 'App\Http\Middleware\AdminMiddl
     Route::resource('feedback', 'Management\FeedbackController', [
         'only' => [
             'index', 'show', 'store', 'destroy'
+        ]
+    ]);
+    Route::resource('users', 'Management\UserController', [
+        'only' => [
+            'index', 'destroy'
         ]
     ]);
 });
@@ -87,11 +73,8 @@ post('/comment/{slug}', ['as' => 'comment_store', 'uses' => 'Management\CommentC
 
 // Authenticate user allowed...
 Route::get('/playlist', ['as' => 'private_playlist', 'uses' => 'Management\PlaylistController@index']);
-Route::get('/setting', ['as' => 'private_setting', 'uses' => 'Management\UserController@setting']);
-Route::get('/{slug}', [
-    'as' => 'private_profile',
-    'uses' => 'Management\UserController@show'
-]);
+Route::get('/setting', ['as' => 'private_setting', 'uses' => 'Management\UserController@edit']);
+Route::get('/{slug}', ['as' => 'private_profile', 'uses' => 'Management\UserController@show']);
 
 // User playlist...
 Route::bind('playlist', function($id){
@@ -108,6 +91,8 @@ $router->resource('playlist', 'Management\PlaylistController', [
         'destroy'   => 'playlist_destroy',
     ]
 ]);
+
+// Ajax song route handle...
 post('song/playlist', ['as' => 'song_playlist_save', 'uses' => 'Management\SongController@saveToPlaylist']);
 delete('song/playlist/{slug}', ['as' => 'song_playlist_delete', 'uses' => 'Management\SongController@deleteFromPlaylist']);
 
@@ -117,15 +102,11 @@ Route::bind('user', function($id){
 });
 $router->resource('user', 'Management\UserController', [
     'names' =>[
-        'index'     => 'user',
         'show'      => 'user_show',
-        'create'    => 'user_create',
-        'edit'      => 'user_edit',
-        'store'     => 'user_store',
+        'edit'      => 'user_setting',
         'update'    => 'user_update',
-        'destroy'   => 'user_destroy',
-        'setting'   => 'user_setting',
-    ]
+    ],
+    'only' => ['show', 'edit', 'update']
 ]);
 
 

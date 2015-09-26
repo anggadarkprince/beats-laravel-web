@@ -46,4 +46,6 @@ return [
     'video_created' => 'Video has been created.',
     'video_updated' => 'Video has been updated.',
     'video_deleted' => 'Video has been deleted.',
+
+    'user_deleted' => 'User has been deleted.',
 ];

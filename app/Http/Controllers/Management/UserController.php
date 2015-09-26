@@ -10,14 +10,18 @@ use App\Http\Requests;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+    private $user;
 
-    public function __construct()
+    public function __construct(User $user)
     {
         $this->middleware('auth', ['except' => 'show']);
+
+        $this->user = new User();
     }
 
     /**
@@ -27,35 +31,14 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
-    }
+        $page = 'Album';
 
-    public function setting()
-    {
-        $userData = Auth::user();
+        $users = $this->user
+            ->where('level', 'USER')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
-        return view('users.setting', compact('userData'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  Request  $request
-     * @return Response
-     */
-    public function store(Request $request)
-    {
-        //
+        return view('users.index', compact('page', 'users'));
     }
 
     /**
@@ -79,13 +62,14 @@ class UserController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
      * @return Response
+     * @internal param int $id
      */
-    public function edit($id)
+    public function edit()
     {
-        //
+        $userData = Auth::user();
+
+        return view('users.setting', compact('userData'));
     }
 
     /**
@@ -146,6 +130,12 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = $this->user->find($id);
+
+        $user->delete();
+
+        Session::flash('status', Lang::get('alert.user_deleted'));
+
+        return redirect()->route('admin::users.index');
     }
 }

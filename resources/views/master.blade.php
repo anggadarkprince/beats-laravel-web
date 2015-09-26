@@ -29,7 +29,8 @@
                 <ul class="nav navbar-nav">
                     <?php $segment = Request::segment(1) ?>
                     <li class="{{ $segment == 'dashboard'  ? 'active' : '' }}"><a href="{{ route('admin::dashboard') }}"        >Dashboard</a></li>
-                    <li class="{{ $segment == 'artists'     ? 'active' : '' }}"><a href="{{ route('admin::artists.index') }}"    >Artists</a></li>
+                    <li class="{{ $segment == 'users'      ? 'active' : '' }}"><a href="{{ route('admin::users.index') }}"      >Users</a></li>
+                    <li class="{{ $segment == 'artists'    ? 'active' : '' }}"><a href="{{ route('admin::artists.index') }}"    >Artists</a></li>
                     <li class="{{ $segment == 'albums'     ? 'active' : '' }}"><a href="{{ route('admin::albums.index') }}"     >Albums</a></li>
                     <li class="{{ $segment == 'songs'      ? 'active' : '' }}"><a href="{{ route('admin::songs.index') }}"      >Songs</a></li>
                     <li class="{{ $segment == 'videos'     ? 'active' : '' }}"><a href="{{ route('admin::videos.index') }}"     >Videos</a></li>
