@@ -40,12 +40,8 @@ $router->resource('people', 'PeopleController',[
 
 */
 
-get('music/{slug}/edit', ['as' => 'song_edit_path', 'uses' => 'Management\SongController@edit']);
-patch('music/{slug}', ['as' => 'song_update_path', 'uses' => 'Management\SongController@update']);
-delete('music/{slug}', ['as' => 'song_destroy_path', 'uses' => 'Management\SongController@destroy']);
-
 // Admin routes...
-Route::group(['as' => 'admin::', 'middleware' => 'auth'], function () {
+Route::group(['as' => 'admin::', 'middleware' => 'App\Http\Middleware\AdminMiddleware'], function () {
     Route::get('dashboard', ['as' => 'dashboard', function () {
         $page = 'Dashboard';
         return view('pages.dashboard',compact('page'));

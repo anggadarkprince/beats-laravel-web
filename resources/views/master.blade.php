@@ -38,7 +38,7 @@
                     <li class="{{ $segment == 'feedback'   ? 'active' : '' }}"><a href="{{ route('admin::feedback.index') }}"   >Feedback</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="index.html">Logout</a></li>
+                    <li><a href="{{ route('private_sign_out') }}">Logout</a></li>
                 </ul>
             </div><!--/.nav-collapse -->
         </div>
