@@ -107,7 +107,7 @@ $factory->define(App\Video::class, function (Faker\Generator $faker) {
         'artist' => rand(1,30),
         'title' => ucwords($title),
         'description' => $faker->paragraph,
-        'resource' => 'video ('.rand(1,3).').flv',
+        'resource' => 'echo-hereweare.mp4',
         'poster' => 'echo-hereweare.jpg',
         'slug' => str_slug($title)
     ];

@@ -23,7 +23,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">THE BEATS</a>
+                <a class="navbar-brand" href="{{ route('public_home') }}" target="_blank">THE BEATS</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">

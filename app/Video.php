@@ -15,6 +15,7 @@ class Video extends Model
 {
     protected $table = 'videos';
     protected $primaryKey = 'id';
+    protected $fillable = ['artist', 'title', 'description', 'resource', 'poster', 'slug'];
 
     public function artist()
     {
