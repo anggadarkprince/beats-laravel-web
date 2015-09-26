@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Request;
 use Illuminate\Support\Facades\Auth;
 
-class CreateSongRequest extends Request
+class CreateCommentRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,12 +25,7 @@ class CreateSongRequest extends Request
     public function rules()
     {
         return [
-            'title' => 'required|max:50',
-            'lyrics' => 'required',
-            'writer' => 'required|max:100',
-            'music' => 'required|max:100',
-            'duration' => 'required|date_format:m:s',
-            'slug' => 'required|alpha_dash|max:255|unique:songs,slug'
+            'comment' => 'required'
         ];
     }
 }

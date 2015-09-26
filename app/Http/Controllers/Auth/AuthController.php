@@ -26,10 +26,18 @@ class AuthController extends Controller
 
     use AuthenticatesAndRegistersUsers, ThrottlesLogins;
 
-    // when login success
+    /**
+     * when login success
+     *
+     * @var string
+     */
     protected $redirectPath = '/';
 
-    // when login fail
+    /**
+     * when login fail
+     *
+     * @var string
+     */
     protected $loginPath = '/auth/login';
 
     /**
@@ -74,6 +82,8 @@ class AuthController extends Controller
     }
 
     /**
+     * show login page
+     *
      * @return \Illuminate\View\View
      */
     public function getLogin()
@@ -96,6 +106,7 @@ class AuthController extends Controller
         $email = $request->input('email');
         $password = $request->input('password');
 
+        // check authentication by email and password
         if (Auth::attempt(['email' => $email, 'password' => $password])) {
             $slug = str_slug(Auth::user()->name);
             $this->redirectPath = $slug;
@@ -104,14 +115,19 @@ class AuthController extends Controller
 
         $request->session()->flash('status', $this->getFailedLoginMessage());
 
+        // when auth attempt fail bring back inputs and redirect in login page
         return redirect($this->loginPath)->withInput();
     }
 
+
     /**
      * logout authenticated user
+     *
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function getLogout()
     {
+        // clear auth session
         Auth::logout();
 
         return redirect()->route('public_sign_in');

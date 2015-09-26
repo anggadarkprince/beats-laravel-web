@@ -36,7 +36,7 @@
 <div class="form-group {{ $errors->has('duration') ? 'has-error' : '' }}">
     {!! Form::label('duration', 'Duration', ['class' => 'col-sm-2 control-label']) !!}
     <div class="col-sm-10">
-        {!! Form::input('time', 'duration', null, ['class'=>'form-control', 'placeholder' => 'Put song duration', 'required' => true]) !!}
+        {!! Form::input('text', 'duration', null, ['class'=>'form-control', 'placeholder' => 'Put song duration', 'required' => true]) !!}
         {!! $errors->first('duration', '<span class="help-block">:message</span>') !!}
     </div>
 </div>

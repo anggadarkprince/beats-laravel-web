@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Management;
 
 use App\Artist;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\CreatePostRequest;
 use App\Post;
 use Illuminate\Http\Request;
-
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Session;
@@ -15,6 +14,11 @@ use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
 {
+    /**
+     * post object instance of App\Post
+     *
+     * @var Post
+     */
     private $post;
 
     /**
@@ -32,14 +36,12 @@ class PostController extends Controller
      */
     public function index()
     {
+        // title page for meta data in web browser
         $page = 'Posts';
 
-        $posts = $this->post
-            ->select('*', 'artists.name as artist', 'users.name as author', 'posts.slug as slug', 'artists.slug as artistSlug', 'artists.avatar as artistAvatar', 'users.avatar as authorAvatar', 'posts.created_at as created_at')
-            ->join('artists', 'posts.artist', '=', 'artists.id')
-            ->join('users', 'posts.author', '=', 'users.id')
-            ->orderBy('posts.created_at', 'desc')
-            ->paginate(10);
+        // retrieve all posts each 10 records data
+        // each post related by artist
+        $posts = $this->post->allPosts();
 
         return view('posts.index', compact('page', 'posts'));
     }
@@ -47,12 +49,13 @@ class PostController extends Controller
     /**
      * Show the form for creating a new resource.
      *
+     * @param Artist $artist
      * @return Response
      */
-    public function create()
+    public function create(Artist $artist)
     {
-        $artist = new Artist();
-
+        // create assoc array key id (artist) => name (artist)
+        // list for artist drop down
         $artists = $artist->lists('name', 'id');
 
         return view('posts.create', compact('artists'));
@@ -66,29 +69,34 @@ class PostController extends Controller
      */
     public function store(CreatePostRequest $request)
     {
+        // modifying request input data for related record
+        // user is a author who create the post as foreign key
         $request->merge(['author' => Auth::user()->id]);
 
         $this->post->create($request->all());
 
-        Session::flash('status', Lang::get('alert.post_created'));
-
-        return redirect()->route('admin::posts.index');
+        return redirect()
+            ->route('admin::posts.index')
+            ->with('status', Lang::get('alert.post_created'));
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $slug
+     * @param  int $slug
      * @return Response
      */
     public function show($slug = null)
     {
-        $post = new Post();
+        // retrieve single data of post by slug, prepare for Eloquent model
+        // if a unregistered slug has been given by client then fail and return page not found 404
+        $article = $this->post->whereSlug($slug)->firstOrFail();
 
-        $article = $post->whereSlug($slug)->firstOrFail();
-
+        // retrieve user as author (belongsTo)
         $author = $article->author()->firstOrFail();
 
+        // get comment related by this post (hasMany)
+        // post-comment has one-to-many relationship where one post has many comment
         $comments = $article->comments()->get();
 
         return view('pages.post', compact('article', 'author', 'comments'));
@@ -98,15 +106,18 @@ class PostController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param $slug
+     * @param Artist $artist
      * @return Response
      */
-    public function edit($slug)
+    public function edit($slug, Artist $artist)
     {
-        $artist = new Artist();
-
+        // create assoc array key id (artist) => name (artist)
+        // list for artist drop down
         $artists = $artist->lists('name', 'id');
 
-        $post = $this->post->where('slug', $slug)->first();
+        // retrieve single data of post by slug, prepare for Eloquent model
+        // if a unregistered slug has been given by client then fail and return page not found 404
+        $post = $this->post->where('slug', $slug)->firstOrFail();
 
         return view('posts.edit', compact('post', 'artists'));
     }
@@ -122,13 +133,17 @@ class PostController extends Controller
     {
         $post = $this->post->where('slug', $slug)->firstOrFail();
 
-        $validator = Validator::make($request->all(), [
+        // rules for validation
+        // slug must be unique when changes
+        $rules = [
             'artist' => 'required',
             'title' => 'required|max:100',
             'content' => 'required',
-            'slug' => 'required|alpha_dash|max:255|unique:posts,slug,'.$post->id
-        ]);
+            'slug' => 'required|alpha_dash|max:255|unique:posts,slug,' . $post->id
+        ];
+        $validator = Validator::make($request->all(), $rules);
 
+        // check validation process pass or fail
         if ($validator->fails()) {
             Session::flash('status', Lang::get('alert.unvalidated'));
 
@@ -137,11 +152,12 @@ class PostController extends Controller
             );
         }
 
+        // save modified post by related data which retrieved
         $post->fill($request->all())->save();
 
-        Session::flash('status', Lang::get('alert.post_updated'));
-
-        return redirect()->route('admin::posts.index');
+        return redirect()
+            ->route('admin::posts.index')
+            ->with('status', Lang::get('alert.post_updated'));
     }
 
     /**
@@ -152,12 +168,15 @@ class PostController extends Controller
      */
     public function destroy($slug)
     {
+        // retrieve single data of album by slug, prepare for Eloquent model
+        // if a unregistered slug has been given by client then fail and return page not found 404
         $post = $this->post->where('slug', $slug)->firstOrFail();
 
+        // delete album by related data which retrieved
         $post->delete();
 
-        Session::flash('status', Lang::get('alert.post_deleted'));
-
-        return redirect()->route('admin::posts.index');
+        return redirect()
+            ->route('admin::posts.index')
+            ->with('status', Lang::get('alert.post_deleted'));
     }
 }

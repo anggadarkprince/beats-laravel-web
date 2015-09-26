@@ -3,16 +3,20 @@
 namespace App\Http\Controllers\Management;
 
 use App\Artist;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateArtistRequest;
 use Illuminate\Http\Request;
-
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
 class ArtistController extends Controller
 {
+    /**
+     * artist object instance of App\Artist
+     *
+     * @var Artist
+     */
     private $artist;
 
     /**
@@ -25,16 +29,16 @@ class ArtistController extends Controller
 
     /**
      * Display a listing of the resource.
+     *
      * @return Response
-     * @internal param Artist $artist
      */
     public function index()
     {
+        // title page for meta data in web browser
         $page = 'Artist';
 
-        $artists = $this->artist
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        // retrieve all artists each 10 records data
+        $artists = $this->artist->allArtists();
 
         return view('artists.index', compact('page', 'artists'));
     }
@@ -57,21 +61,15 @@ class ArtistController extends Controller
      */
     public function store(CreateArtistRequest $request)
     {
-        if ($request->hasFile('avatar_file')) {
-            $upload = $request->file('avatar_file');
-            if ($upload->isValid())
-            {
-                $fileName = $request->input('slug').'.'.$upload->getClientOriginalExtension();
-                $upload->move(base_path('public/img/avatar/'), $fileName);
-                $request->merge(['avatar' => $fileName]);
-            }
-        }
+        // upload avatar by request
+        // return false if upload operation was fail
+        $this->_uploadAvatar($request);
 
         $this->artist->create($request->all());
 
-        Session::flash('status', Lang::get('alert.artist_created'));
-
-        return redirect()->route('admin::artists.index');
+        return redirect()
+            ->route('admin::artists.index')
+            ->with('status', Lang::get('alert.artist_created'));
     }
 
     /**
@@ -83,6 +81,8 @@ class ArtistController extends Controller
      */
     public function edit($slug)
     {
+        // retrieve single data of artist by slug
+        // if a unregistered slug has been given by client then fail and return page not found 404
         $artist = $this->artist->where('slug', $slug)->firstOrFail();
 
         return view('artists.edit', compact('artist'));
@@ -98,16 +98,22 @@ class ArtistController extends Controller
      */
     public function update(Request $request, $slug)
     {
+        // retrieve single data of artist by slug, prepare for Eloquent model
+        // if a unregistered slug has been given by client then fail and return page not found 404
         $artist = $this->artist->where('slug', $slug)->firstOrFail();
 
-        $validator = Validator::make($request->all(), [
+        // rules for validation
+        // avatar doesn't required to be updated and slug must be unique when changes
+        $rules = [
             'name' => 'required',
             'about' => 'required|max:255',
             'birthday' => 'required',
             'birthplace' => 'required|max:100',
-            'slug' => 'required|alpha_dash|max:255|unique:posts,slug,'.$artist->id
-        ]);
+            'slug' => 'required|alpha_dash|max:255|unique:posts,slug,' . $artist->id
+        ];
+        $validator = Validator::make($request->all(), $rules);
 
+        // check validation process pass or fail
         if ($validator->fails()) {
             Session::flash('status', Lang::get('alert.unvalidated'));
 
@@ -116,21 +122,16 @@ class ArtistController extends Controller
             );
         }
 
-        if ($request->hasFile('avatar_file')) {
-            $upload = $request->file('avatar_file');
-            if ($upload->isValid())
-            {
-                $fileName = $request->input('slug').'.'.$upload->getClientOriginalExtension();
-                $upload->move(base_path('public/img/avatar/'), $fileName);
-                $request->merge(['avatar' => $fileName]);
-            }
-        }
+        // upload cover by request
+        // return false if upload operation was fail
+        $this->_uploadAvatar($request);
 
+        // save modified artist by related data which retrieved
         $artist->fill($request->all())->save();
 
-        Session::flash('status', Lang::get('alert.artist_updated'));
-
-        return redirect()->route('admin::artists.index');
+        return redirect()
+            ->route('admin::artists.index')
+            ->with('status', Lang::get('alert.artist_updated'));
     }
 
     /**
@@ -142,12 +143,35 @@ class ArtistController extends Controller
      */
     public function destroy($slug)
     {
+        // retrieve single data of album by slug, prepare for Eloquent model
+        // if a unregistered slug has been given by client then fail and return page not found 404
         $post = $this->artist->where('slug', $slug)->firstOrFail();
 
+        // delete artist by related data which retrieved
         $post->delete();
 
-        Session::flash('status', Lang::get('alert.post_deleted'));
+        return redirect()
+            ->route('admin::artists.index')
+            ->with('status', Lang::get('alert.artist_deleted'));
+    }
 
-        return redirect()->route('admin::artists.index');
+    /**
+     * upload album cover by passing a request
+     *
+     * @param CreateArtistRequest|Request $request
+     */
+    private function _uploadAvatar(Request $request)
+    {
+        // modified uploaded filename by slug because slug also unique
+        $fileName = $request->input('slug');
+
+        // passing all attributed to upload helper
+        $upload = upload_file($request, 'avatar_file', base_path('public/img/avatar/'), $fileName);
+
+        if ($upload['status']) {
+            $request->merge(['avatar' => $upload['filename']]);
+        }
+
+        return $upload['status'];
     }
 }

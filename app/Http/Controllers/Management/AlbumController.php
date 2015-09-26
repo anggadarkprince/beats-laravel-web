@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\Validator;
 
 class AlbumController extends Controller
 {
+    /**
+     * album object instance of App\Album
+     *
+     * @var Album
+     */
     private $album;
 
     /**
@@ -26,18 +31,17 @@ class AlbumController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @param Album $album
      * @return Response
+     * @internal param Album $album
      */
-    public function index(Album $album)
+    public function index()
     {
+        // title page for meta data in web browser
         $page = 'Album';
 
-        $albums = $album->select("*","artists.slug as slugArtist","albums.slug as slugAlbum", 'albums.created_at as created_at')
-            ->join('artists', 'albums.artist', '=', 'artists.id')
-            ->orderBy('albums.released', 'desc')
-            ->paginate(10);
+        // retrieve all albums each 10 records data
+        // each album related by artist
+        $albums = $this->album->allAlbums();
 
         return view('albums.index', compact('page', 'albums'));
     }
@@ -45,12 +49,13 @@ class AlbumController extends Controller
     /**
      * Show the form for creating a new resource.
      *
+     * @param Artist $artist
      * @return Response
      */
-    public function create()
+    public function create(Artist $artist)
     {
-        $artist = new Artist();
-
+        // create assoc array key id (artist) => name (artist)
+        // list for artist drop down
         $artists = $artist->lists('name', 'id');
 
         return view('albums.create', compact('artists'));
@@ -64,15 +69,9 @@ class AlbumController extends Controller
      */
     public function store(CreateAlbumRequest $request)
     {
-        if ($request->hasFile('cover_file')) {
-            $upload = $request->file('cover_file');
-            if ($upload->isValid())
-            {
-                $fileName = $request->input('slug').'.'.$upload->getClientOriginalExtension();
-                $upload->move(base_path('public/img/cover/'), $fileName);
-                $request->merge(['cover' => $fileName]);
-            }
-        }
+        // upload cover by request
+        // return false if upload operation was fail
+        $this->_uploadCover($request);
 
         $this->album->create($request->all());
 
@@ -85,14 +84,17 @@ class AlbumController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param $slug
+     * @param Artist $artist
      * @return Response
      */
-    public function edit($slug)
+    public function edit($slug, Artist $artist)
     {
-        $artist = new Artist();
-
+        // create assoc array key id (artist) => name (artist)
+        // list for artist drop down
         $artists = $artist->lists('name', 'id');
 
+        // retrieve single data of album by slug
+        // if a unregistered slug has been given by client then fail and return page not found 404
         $album = $this->album->where('slug', $slug)->firstOrFail();
 
         return view('albums.edit', compact('album', 'artists'));
@@ -107,16 +109,22 @@ class AlbumController extends Controller
      */
     public function update(Request $request, $slug)
     {
+        // retrieve single data of album by slug, prepare for Eloquent model
+        // if a unregistered slug has been given by client then fail and return page not found 404
         $album = $this->album->where('slug', $slug)->firstOrFail();
 
-        $validator = Validator::make($request->all(), [
+        // rules for validation
+        // cover doesn't required to be updated and slug must be unique when changes
+        $rules = [
             'title' => 'required|max:50',
             'description' => 'required|max:250',
             'label' => 'required|max:50',
             'released' => 'required|date',
-            'slug' => 'required|alpha_dash|max:255|unique:albums,slug,'.$album->id
-        ]);
+            'slug' => 'required|alpha_dash|max:255|unique:albums,slug,' . $album->id
+        ];
+        $validator = Validator::make($request->all(), $rules);
 
+        // check validation process pass or fail
         if ($validator->fails()) {
             Session::flash('status', Lang::get('alert.unvalidated'));
 
@@ -125,16 +133,11 @@ class AlbumController extends Controller
             );
         }
 
-        if ($request->hasFile('cover_file')) {
-            $upload = $request->file('cover_file');
-            if ($upload->isValid())
-            {
-                $fileName = $request->input('slug').'.'.$upload->getClientOriginalExtension();
-                $upload->move(base_path('public/img/cover/'), $fileName);
-                $request->merge(['cover' => $fileName]);
-            }
-        }
+        // upload cover by request
+        // return false if upload operation was fail
+        $this->_uploadCover($request);
 
+        // save modified album by related data which retrieved
         $album->fill($request->all())->save();
 
         Session::flash('status', Lang::get('alert.album_updated'));
@@ -147,16 +150,38 @@ class AlbumController extends Controller
      *
      * @param $slug
      * @return Response
-     * @internal param int $id
      */
     public function destroy($slug)
     {
+        // retrieve single data of album by slug, prepare for Eloquent model
+        // if a unregistered slug has been given by client then fail and return page not found 404
         $album = $this->album->where('slug', $slug)->firstOrFail();
 
+        // delete album by related data which retrieved
         $album->delete();
 
         Session::flash('status', Lang::get('alert.album_deleted'));
 
         return redirect()->route('admin::albums.index');
+    }
+
+    /**
+     * upload album cover by passing a request
+     *
+     * @param CreateAlbumRequest|Request $request
+     */
+    private function _uploadCover(Request $request)
+    {
+        // modified uploaded filename by slug because slug also unique
+        $fileName = $request->input('slug');
+
+        // passing all attributed to upload helper
+        $upload = upload_file($request, 'cover_file', base_path('public/img/cover/'), $fileName);
+
+        if ($upload['status']) {
+            $request->merge(['cover' => $upload['filename']]);
+        }
+
+        return $upload['status'];
     }
 }

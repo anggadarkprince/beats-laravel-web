@@ -19,6 +19,11 @@ use Illuminate\Support\Facades\Validator;
  */
 class SongController extends Controller
 {
+    /**
+     * song object instance of App\Song
+     *
+     * @var Post
+     */
     private $song;
 
     /**
@@ -34,25 +39,24 @@ class SongController extends Controller
      */
     public function index()
     {
-        $page = 'Album';
+        // title page for meta data in web browser
+        $page = 'Song';
 
-        $songs = $this->song
-            ->select('*','artists.name as artist', 'albums.title as album', 'artists.slug as slugArtist', 'albums.slug as slugAlbum', 'songs.slug as slugSong', 'songs.created_at as created_at')
-            ->join('albums', 'songs.album', '=', 'albums.id')
-            ->join('artists', 'albums.artist', '=', 'artists.id')
-            ->orderBy('songs.created_at', 'desc')
-            ->paginate(10);
+        // retrieve all songs each 10 records data
+        // each song related by album
+        $songs = $this->song->allSongs();
 
         return view('songs.index', compact('page', 'songs'));
     }
 
     /**
+     * @param Album $album
      * @return \Illuminate\View\View
      */
-    public function create()
+    public function create(Album $album)
     {
-        $album = new Album();
-
+        // create assoc array key id (album) => title (album)
+        // list for artist drop down
         $albums = $album->lists('title', 'id');
 
         return view('songs.create', compact('albums'));
@@ -66,44 +70,53 @@ class SongController extends Controller
     {
         $this->song->create($request->all());
 
-        Session::flash('status', Lang::get('alert.song_created'));
-
-        return redirect()->route('admin::songs.index');
+        return redirect()
+            ->route('admin::songs.index')
+            ->with('status', Lang::get('alert.song_created'));
     }
 
     /**
      * @param $slug
+     * @param Album $album
      * @return \Illuminate\View\View
      */
-    public function edit($slug)
+    public function edit($slug, Album $album)
     {
-        $album = new Album();
-
+        // create assoc array key id (album) => title (album)
+        // list for artist drop down
         $albums = $album->lists('title', 'id');
 
-        $song = $this->song->where('slug', $slug)->first();
+        // retrieve single data of song by slug
+        // if a unregistered slug has been given by client then fail and return page not found 404
+        $song = $this->song->where('slug', $slug)->firstOrFail();
 
         return view('songs.edit', compact('song', 'albums'));
     }
 
     /**
-     * @param CreateSongRequest $request
+     * @param CreateSongRequest|Request $request
      * @param $slug
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $slug)
     {
-        $song = $this->song->whereSlug($slug)->first();
+        // retrieve single data of song by slug
+        // if a unregistered slug has been given by client then fail and return page not found 404
+        $song = $this->song->whereSlug($slug)->firstOrFail();
 
-        $validator = Validator::make($request->all(), [
+        // rules for validation
+        // slug must be unique when changes
+        $rules = [
             'title' => 'required|max:50',
             'lyrics' => 'required',
             'writer' => 'required|max:100',
             'music' => 'required|max:100',
-            'duration' => 'required|date_format:h:m:s',
-            'slug' => 'required|alpha_dash|max:255|unique:songs,slug,'.$song->id
-        ]);
+            'duration' => 'required|date_format:m:s',
+            'slug' => 'required|alpha_dash|max:255|unique:songs,slug,' . $song->id
+        ];
+        $validator = Validator::make($request->all(), $rules);
 
+        // check validation process pass or fail
         if ($validator->fails()) {
             Session::flash('status', Lang::get('alert.unvalidated'));
 
@@ -112,11 +125,12 @@ class SongController extends Controller
             );
         }
 
+        // save modified song by related data which retrieved
         $song->fill($request->all())->save();
 
-        Session::flash('status', Lang::get('alert.song_updated'));
-
-        return redirect()->route('admin::songs.index');
+        return redirect()
+            ->route('admin::songs.index')
+            ->with('status', Lang::get('alert.song_updated'));
     }
 
     /**
@@ -125,44 +139,70 @@ class SongController extends Controller
      */
     public function destroy($slug)
     {
+        // retrieve single data of song by slug
+        // if a unregistered slug has been given by client then fail and return page not found 404
         $song = $this->song->where('slug', $slug)->firstOrFail();
 
+        // delete album by related data which retrieved
         $song->delete();
 
-        Session::flash('status', Lang::get('alert.song_deleted'));
-
-        return redirect()->route('admin::songs.index');
+        return redirect()
+            ->route('admin::songs.index')
+            ->with('status', Lang::get('alert.song_deleted'));
     }
 
     /**
+     * save a song to playlist, this request comes via AJAX
+     *
      * @param Request $request
+     * @param PlaylistSong $playlistSong
      * @return string|static
      */
-    public function saveToPlaylist(Request $request)
+    public function saveToPlaylist(Request $request, PlaylistSong $playlistSong)
     {
-        $playlistSong = new PlaylistSong();
-        if(Auth::check()){
+        // user must be logged in and authorized
+        if (Auth::check()) {
+
+            // retrieve single data of song by slug
+            // if a unregistered slug has been given by client then fail and return page not found 404
+            // get song id which saved to playlist
             $song = $this->song->whereSlug($request->input('song'))->firstOrFail()->id;
+
+            // modifying request input data for related record
+            // song is a subject which saved to playlist as foreign key
             $request->merge(['song' => $song]);
+
             return $playlistSong->create($request->all());
         }
         return 'false';
     }
 
     /**
+     * delete or remove song from playlist at the song page
+     *
      * @param Request $request
+     * @param PlaylistSong $playlistSong
      * @return string
      */
-    public function deleteFromPlaylist(Request $request)
+    public function deleteFromPlaylist(Request $request, PlaylistSong $playlistSong)
     {
-        $playlistSong = new PlaylistSong();
+        // user must be logged in and authorized
+        if (Auth::check()) {
 
-        if(Auth::check()) {
+            // retrieve single data of song by slug
+            // if a unregistered slug has been given by client then fail and return page not found 404
+            // get song id which saved in playlist before
             $song = $this->song->whereSlug($request->input('song'))->firstOrFail()->id;
 
+            // modifying request input data for related record
+            // song is a subject which removed from playlist as foreign key
             $request->merge(['song' => $song]);
 
-            $list = $playlistSong->where('song', $request->input('song'))->where('playlist', $request->input('playlist'))->first();
+            // retrieve and remove record by composite key : song and playlist
+            $list = $playlistSong
+                ->where('song', $request->input('song'))
+                ->where('playlist', $request->input('playlist'))
+                ->firstOrFail();
 
             $list->delete();
 

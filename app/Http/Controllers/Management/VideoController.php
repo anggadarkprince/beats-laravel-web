@@ -3,17 +3,21 @@
 namespace App\Http\Controllers\Management;
 
 use App\Artist;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateVideoRequest;
 use App\Video;
 use Illuminate\Http\Request;
-
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
 class VideoController extends Controller
 {
+    /**
+     * video object instance of App\Video
+     *
+     * @var Artist
+     */
     private $video;
 
     /**
@@ -31,13 +35,11 @@ class VideoController extends Controller
      */
     public function index()
     {
+        // title page for meta data in web browser
         $page = 'Video';
 
-        $videos = $this->video
-            ->select('*', 'videos.slug as videoSlug', 'artists.slug as artistSlug', 'videos.created_at as uploaded_at')
-            ->join('artists', 'videos.artist', '=', 'artists.id')
-            ->orderBy('videos.created_at', 'desc')
-            ->paginate(10);
+        // retrieve all videos each 10 records data
+        $videos = $this->video->allVideos();
 
         return view('videos.index', compact('page', 'videos'));
     }
@@ -45,12 +47,13 @@ class VideoController extends Controller
     /**
      * Show the form for creating a new resource.
      *
+     * @param Artist $artist
      * @return Response
      */
-    public function create()
+    public function create(Artist $artist)
     {
-        $artist = new Artist();
-
+        // create assoc array key id (artist) => name (artist)
+        // list for artist drop down
         $artists = $artist->lists('name', 'id');
 
         return view('videos.create', compact('artists'));
@@ -64,31 +67,40 @@ class VideoController extends Controller
      */
     public function store(CreateVideoRequest $request)
     {
-        if ($request->hasFile('poster_file')) {
-            $upload = $request->file('poster_file');
-            if ($upload->isValid())
-            {
-                $fileName = $request->input('slug').'.'.$upload->getClientOriginalExtension();
-                $upload->move(base_path('public/vid/'), $fileName);
-                $request->merge(['poster' => $fileName]);
-            }
-        }
+        // upload poster by request
+        // return false if upload operation was fail
+        $this->_uploadData($request, 'poster_file', 'poster');
 
-        if ($request->hasFile('resource_file')) {
-            $upload = $request->file('resource_file');
-            if ($upload->isValid())
-            {
-                $fileName = $request->input('slug').'.'.$upload->getClientOriginalExtension();
-                $upload->move(base_path('public/vid/'), $fileName);
-                $request->merge(['resource' => $fileName]);
-            }
-        }
+        // upload video by request
+        // return false if upload operation was fail
+        $this->_uploadData($request, 'resource_file', 'resource');
 
         $this->video->create($request->all());
 
-        Session::flash('status', Lang::get('alert.video_created'));
+        return redirect()
+            ->route('admin::videos.index')
+            ->with('status', Lang::get('alert.video_created'));
+    }
 
-        return redirect()->route('admin::videos.index');
+    /**
+     * @param CreateVideoRequest|Request $request
+     * @param $source
+     * @param $field
+     * @return array
+     */
+    private function _uploadData(Request $request, $source, $field)
+    {
+        // modified uploaded filename by slug because slug also unique
+        $fileName = $request->input('slug');
+
+        // passing all attributed to upload helper
+        $upload = upload_file($request, $source, base_path('public/vid/'), $fileName);
+
+        if ($upload['status']) {
+            $request->merge([$field => $upload['filename']]);
+        }
+
+        return $upload['status'];
     }
 
     /**
@@ -99,9 +111,9 @@ class VideoController extends Controller
      */
     public function show($slug)
     {
-        $video = new Video();
-
-        $videoData = $video->where('slug', $slug)->firstOrFail();
+        // retrieve single data of video by slug
+        // if a unregistered slug has been given by client then fail and return page not found 404
+        $videoData = $this->video->where('slug', $slug)->firstOrFail();
 
         return view('pages.player', compact('videoData'));
     }
@@ -110,14 +122,17 @@ class VideoController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param $slug
+     * @param Artist $artist
      * @return Response
      */
-    public function edit($slug)
+    public function edit($slug, Artist $artist)
     {
-        $artist = new Artist();
-
+        // create assoc array key id (artist) => name (artist)
+        // list for artist drop down
         $artists = $artist->lists('name', 'id');
 
+        // retrieve single data of album by slug
+        // if a unregistered slug has been given by client then fail and return page not found 404
         $video = $this->video->where('slug', $slug)->firstOrFail();
 
         return view('videos.edit', compact('video', 'artists'));
@@ -134,15 +149,19 @@ class VideoController extends Controller
     {
         $video = $this->video->where('slug', $slug)->firstOrFail();
 
-        $validator = Validator::make($request->all(), [
+        // rules for validation
+        // slug must be unique when changes
+        $rules = [
             'artist' => 'required',
             'title' => 'required|max:50',
             'description' => 'required|max:250',
             'poster_file' => 'image',
-            'resource_file' => 'mimes:mp4|max:2000',
-            'slug' => 'required|alpha_dash|max:255|unique:videos,slug,'.$video->id
-        ]);
+            'resource_file' => 'mimes:mp4,mpg|max:2000',
+            'slug' => 'required|alpha_dash|max:255|unique:videos,slug,' . $video->id
+        ];
+        $validator = Validator::make($request->all(), $rules);
 
+        // check validation process pass or fail
         if ($validator->fails()) {
             Session::flash('status', Lang::get('alert.unvalidated'));
 
@@ -151,31 +170,20 @@ class VideoController extends Controller
             );
         }
 
-        if ($request->hasFile('poster_file')) {
-            $upload = $request->file('poster_file');
-            if ($upload->isValid())
-            {
-                $fileName = $request->input('slug').'.'.$upload->getClientOriginalExtension();
-                $upload->move(base_path('public/vid/'), $fileName);
-                $request->merge(['poster' => $fileName]);
-            }
-        }
+        // upload poster by request
+        // return false if upload operation was fail
+        $this->_uploadData($request, 'poster_file', 'poster');
 
-        if ($request->hasFile('resource_file')) {
-            $upload = $request->file('resource_file');
-            if ($upload->isValid())
-            {
-                $fileName = $request->input('slug').'.'.$upload->getClientOriginalExtension();
-                $upload->move(base_path('public/vid/'), $fileName);
-                $request->merge(['resource' => $fileName]);
-            }
-        }
+        // upload video by request
+        // return false if upload operation was fail
+        $this->_uploadData($request, 'resource_file', 'resource');
 
+        // save modified album by related data which retrieved
         $video->fill($request->all())->save();
 
-        Session::flash('status', Lang::get('alert.video_updated'));
-
-        return redirect()->route('admin::videos.index');
+        return redirect()
+            ->route('admin::videos.index')
+            ->with('status', Lang::get('alert.video_updated'));
     }
 
     /**
@@ -186,12 +194,15 @@ class VideoController extends Controller
      */
     public function destroy($slug)
     {
+        // retrieve single data of video by slug, prepare for Eloquent model
+        // if a unregistered slug has been given by client then fail and return page not found 404
         $video = $this->video->where('slug', $slug)->firstOrFail();
 
+        // delete album by related data which retrieved
         $video->delete();
 
-        Session::flash('status', Lang::get('alert.video_deleted'));
-
-        return redirect()->route('admin::videos.index');
+        return redirect()
+            ->route('admin::videos.index')
+            ->with('status', Lang::get('alert.video_deleted'));
     }
 }
