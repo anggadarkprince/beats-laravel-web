@@ -8,12 +8,12 @@
     <meta property="og:description"   content="Music Discovery Website" />
     <meta property="og:image"         content="/img/avatar/avatar (1).jpg" />
 
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>BEATS - @yield('page')</title>
     <link rel="stylesheet" href="/css/bootstrap/bootstrap.css">
     <link rel="stylesheet" href="/css/videojs/video-js.css">
     <link rel="stylesheet" href="/css/styles.css">
-</head>
-<body>
 
     <script>
         window.fbAsyncInit = function() {
@@ -32,7 +32,8 @@
             fjs.parentNode.insertBefore(js, fjs);
         }(document, 'script', 'facebook-jssdk'));
     </script>
-
+</head>
+<body>
     <div class="container">
         <header class="header">
             <ul class="nav nav-pills navbar-right">
@@ -75,6 +76,12 @@
         videojs.options.flash.swf = "/js/videojs/video-js.swf";
 
         $(document).ready(function(){
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
             if($('.playlist-item').length){
                 var playlist = "@if(isset($savedPlaylist)){{$savedPlaylist->id}}@endif";
                 var list = $('.playlist-item');
